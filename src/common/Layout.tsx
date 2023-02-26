@@ -8,7 +8,7 @@ type LayoutProps = {
 
 const Layout: FC<LayoutProps> = ({children}) => {
   return (
-    <div className="flex min-h-screen flex-col bg-black">
+    <div className="flex h-screen flex-col bg-[#101124]">
         <Navbar/>
         {children}
         <Footer/>
