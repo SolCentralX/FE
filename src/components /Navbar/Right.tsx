@@ -1,13 +1,12 @@
 import React from 'react'
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
+import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 
 const Right = () => {
   return (
-    <div className='flex flex-row space-x-3'>
-        <button className='border-neutral-600 border-2 rounded-lg text-white text-xs p-2 w-30'>
+    <div className='flex flex-row text-white border-neutral-600 border-2 rounded-lg items-center pl-2'>
             <AccountBalanceWalletIcon/>
-            Connect Wallet 
-        </button>
+            <WalletMultiButton className='bg-white'/>
     </div>
   )
 }
