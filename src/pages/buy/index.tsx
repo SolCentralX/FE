@@ -1,5 +1,5 @@
 import BuyTitle from '@/components /Buy/BuyTitle'
-import Pool from '@/components /Buy/Pool'
+import Pool from '@/components /Pool/Pool'
 import Trade from '@/components /Buy/Trade'
 import React from 'react'
 

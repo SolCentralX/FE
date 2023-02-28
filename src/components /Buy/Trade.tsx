@@ -7,7 +7,7 @@ import TradeTabs from '../Trade/TradeTabs'
 
 const Trade = () => {
   return (
-    <div className='flex flex-col bg-[#17182c] w-1/3 p-3 space-y-3'>
+    <div className='flex flex-col bg-[#17182c] w-1/4 p-3 space-y-3 h-3/4 justify-center'>
         <TradeTabs/>
         <TradePay/>
         <TradeRecieve/>

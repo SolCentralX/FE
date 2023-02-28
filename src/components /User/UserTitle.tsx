@@ -1,11 +1,11 @@
 import React from 'react'
 
-const BuyTitle = () => {
+const UserTitle = () => {
   return (
     <div className='text-white text-2xl'>
-        LPs
+    User Position's
     </div>
   )
 }
 
-export default BuyTitle
+export default UserTitle

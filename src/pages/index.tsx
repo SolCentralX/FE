@@ -1,6 +1,10 @@
 import Head from 'next/head'
 import { Inter } from 'next/font/google'
-
+import BuyTitle from '@/components /Buy/BuyTitle'
+import Pool from '@/components /Pool/Pool'
+import Trade from '@/components /Buy/Trade'
+import UserTitle from '@/components /User/UserTitle'
+import UserStats from '@/components /User/UserStats'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -13,10 +17,26 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main >
-       <div>
-       </div>
-      </main>
+      <div className='flex flex-row pl-10 h-3/4 space-y-10 w-full pt-5 justify-between pr-5'>
+        <div className='flex flex-col w-3/5 h-full space-y-5'>
+          <div className='flex flex-col w-full bg-[#17182c] h-1/2 pl-5 pt-3 space-y-3'>
+            <BuyTitle/>
+            <div className='h-3/4 overflow-y-auto w-full flex flex-col space-y-3'>
+              <Pool/>
+              <Pool/>
+              <Pool/>
+              <Pool/>
+              <Pool/>
+              <Pool/>
+            </div>
+          </div>
+          <div className='flex flex-col w-full bg-[#17182c] pt-3 space-y-3 h-2/5 pl-3 pr-3'>
+              <UserTitle/>
+              <UserStats/>
+          </div>
+        </div>
+        <Trade/>
+      </div>
     </>
   )
 }
