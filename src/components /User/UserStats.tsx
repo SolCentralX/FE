@@ -4,6 +4,7 @@ import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import UserPosition from './UserPosition';
+import UserOrder from './UserOrder';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -60,8 +61,10 @@ const UserStats = () => {
         <UserPosition/>
       </TabPanel>
       <TabPanel value={value} index={1}>
+        <UserOrder/>
       </TabPanel>
       <TabPanel value={value} index={2}>
+        <div className='text-white'>No trades yet</div>
       </TabPanel>
       </div>
     </Box>
