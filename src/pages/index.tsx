@@ -17,7 +17,7 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className='flex flex-row pl-10 h-3/4 space-y-10 w-full pt-5 justify-between pr-5'>
+      <div className='flex flex-row pl-10 h-3/4 space-y-10 w-full pt-5 justify-between pr-5 justify-center'>
         <div className='flex flex-col w-3/5 h-full space-y-5'>
           <div className='flex flex-col w-full bg-[#17182c] h-1/2 pl-5 pt-3 space-y-3'>
             <BuyTitle/>
