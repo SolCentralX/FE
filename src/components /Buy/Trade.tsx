@@ -8,13 +8,15 @@ import TradeTabs from '../Trade/TradeTabs'
 
 const Trade = () => {
   return (
-    <div className='flex flex-col bg-[#17182c] w-1/4 p-3 space-y-3 h-4/5 justify-center'>
-        <TradeTabs/>
+    <div className='flex flex-col w-1/4 h-4/5 space-y-3'>
+    <TradeTabs/>
+    <div className='flex flex-col bg-[#17182c] p-3 space-y-3 justify-center'>
         <TradePay/>
         <TradeRecieve/>
         <TradeLeverage/>
-        <TradeFees/>
-        <TradeInput/>
+        <TradeFees/>  
+    </div>
+    <TradeInput/>
     </div>
   )
 }
