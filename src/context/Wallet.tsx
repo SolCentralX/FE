@@ -21,12 +21,10 @@ const Wallet: FC< {children: ReactNode}> = ({ children }) => {
 
   const wallets = useMemo(
     () => [
-      new PhantomWalletAdapter(),
       new GlowWalletAdapter(),
       new SolflareWalletAdapter(),
       new TorusWalletAdapter(),
       new LedgerWalletAdapter(),
-      new BraveWalletAdapter(),
     ],
     []   
   )

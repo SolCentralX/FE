@@ -14,10 +14,10 @@ const TradeInput = () => {
   return (
     <div className='bg-[#2d42fc] h-1/5 items-center flex flex-row justify-between cursor-pointer'>
       {!connected ? ( 
-         <button>
+         <div className='w-full items-center flex flex-row justify-center space-x-3'>
             <AccountBalanceWalletIcon/>
-           <WalletMultiButton/>
-         </button>
+           <WalletMultiButton className='bg-none'/>
+         </div>
       ): (
         <>
           <div></div>
