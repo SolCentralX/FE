@@ -10,7 +10,7 @@ const UserOrder = () => {
       <div>Price</div>
       <div>Mark Price</div>
     </div>
-    <div className='overflow-auto h-10 space-y-1 text-white'>
+    <div className='overflow-auto h-8 space-y-1 text-white'>
       No orders
     </div>
     </>

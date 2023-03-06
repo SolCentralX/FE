@@ -21,7 +21,7 @@ const TradeInput = () => {
       ): (
         <>
           <div></div>
-          <input type="text" placeholder='Enter an amount' className='bg-[#2d42fc] text-center'/>
+          <input type="text" placeholder='Enter an amount' className='bg-[#2d42fc] text-center h-10'/>
           <SendIcon className='pr-2 cursor-pointer'/>
         </>
         )

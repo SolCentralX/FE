@@ -11,7 +11,7 @@ const UserPosition = () => {
       <div>Collateral</div>
       <div>Entry Price</div>
     </div>
-    <div className='overflow-auto h-20 space-y-1'>
+    <div className='overflow-auto h-8 space-y-1'>
       <UserPositionCard/>
       <UserPositionCard/>
       <UserPositionCard/>
