@@ -6,19 +6,19 @@ import Trade from '@/components /Buy/Trade'
 import UserPosition from '@/components /User/UserPosition'
 import UserStats from '@/components /User/UserStats'
 import TradeMain from '@/components /Trade/TradeMain'
-import {client} from '../context/PerpProvider'
 import { useEffect } from 'react'
+import { fetchPoolsData } from './hook'
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
-
-  // useEffect(() => {
-  //     async function fetchData() {
-  //       const response = await client.getPools();
-  //       console.log(response)
-  //     }
-  //     fetchData();
-  // },[])
+  
+  useEffect(() => {
+      async function fetchDatas() {
+        const response = await fetchPoolsData();
+        console.log(response)
+      }
+      fetchDatas();
+  },[])
 
   return (
     <>

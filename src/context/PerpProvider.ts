@@ -16,6 +16,7 @@ import {
   AccountMeta,
   Keypair,
   SYSVAR_RENT_PUBKEY,
+  Connection
 } from "@solana/web3.js"
 import {
   getAccount,
@@ -33,6 +34,15 @@ import { readFileSync } from "fs"
 
 export type PositionSide = "long" | "short"
 
+// // Set our network to devent.
+// const cluster = "devnet";
+// const network = clusterApiUrl(cluster);
+
+// // Control's how we want to acknowledge when a trasnaction is "done".
+// const opts = {
+//     preflightCommitment: "confirmed",
+// };
+
 export class PerpetualsClient {
   provider: AnchorProvider;
   program: Program<Perpetuals>;
@@ -43,10 +53,17 @@ export class PerpetualsClient {
   perpetuals: { publicKey: PublicKey; bump: number };
 
   constructor(clusterUrl: string, adminKey: string) {
-    this.provider = AnchorProvider.local(clusterUrl, {
-      commitment: "confirmed",
-      preflightCommitment: "confirmed",
-    });
+
+    const connection = new Connection(clusterUrl);
+    this. provider = new AnchorProvider(
+        connection,
+        window.solflare,
+        { preflightCommitment: "confirmed" },
+    );
+
+    // this.provider = AnchorProvider.local(connection,
+    //   window.solflare,
+    //   {preflightCommitment: "confirmed"},);
     setProvider(this.provider);
     this.program = workspace.Perpetuals as Program<Perpetuals>;
 
@@ -672,7 +689,5 @@ export class PerpetualsClient {
       });
   };
 }
-
-export const client = new PerpetualsClient("https://api.devnet.solana.com", "ApxxRUyjGDPNp4VWV9CRfKa1WE37PoJLjjREupUD5Bvt")
 
 
