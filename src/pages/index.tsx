@@ -1,10 +1,6 @@
 import Head from 'next/head'
 import { Inter } from 'next/font/google'
-import BuyTitle from '@/components /Buy/BuyTitle'
-import Pool from '@/components /Pool/Pool'
 import Trade from '@/components /Buy/Trade'
-import UserPosition from '@/components /User/UserPosition'
-import UserStats from '@/components /User/UserStats'
 import TradeMain from '@/components /Trade/TradeMain'
 import {client} from '../context/PerpProvider'
 import { useEffect } from 'react'
@@ -14,10 +10,14 @@ export default function Home() {
 
   // useEffect(() => {
   //     async function fetchData() {
+  //       try{
   //       const response = await client.getPools();
   //       console.log(response)
+  //       }catch(e){
+  //       console.log(e)
+  //       }
   //     }
-  //     fetchData();
+  //     fetchData()
   // },[])
 
   return (

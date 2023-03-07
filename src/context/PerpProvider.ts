@@ -7,7 +7,7 @@ import {
   utils,
   BN,
 } from "@project-serum/anchor"
-import { Perpetuals } from "../target/perpetuals"
+import idl from "../target/perpetuals"
 import {
   PublicKey,
   TransactionInstruction,
@@ -31,8 +31,9 @@ import { sha256 } from "js-sha256"
 import { encode } from "bs58"
 import { readFileSync } from "fs"
 
-export type PositionSide = "long" | "short"
+const programId = "2nv5ppjUhvze6m6RAZweUBVzt3KSbszsBuW1Yjh4kr8A"
 
+export type PositionSide = "long" | "short"
 export class PerpetualsClient {
   provider: AnchorProvider;
   program: Program<Perpetuals>;
@@ -673,6 +674,6 @@ export class PerpetualsClient {
   };
 }
 
-export const client = new PerpetualsClient("https://api.devnet.solana.com", "ApxxRUyjGDPNp4VWV9CRfKa1WE37PoJLjjREupUD5Bvt")
+export const client = new PerpetualsClient("https://api.devnet.solana.com", "/Users/joshuawee/Desktop/git_projects/mainKp.json")
 
 
