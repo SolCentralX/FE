@@ -1,11 +1,10 @@
 import '@/styles/globals.css'
 import type { AppProps } from 'next/app'
-import  React, { FC, useMemo } from 'react'
+import  React, { FC } from 'react'
 import Layout from '../common/Layout'
 import Wallet
  from '@/context/Wallet'
 const App: FC<AppProps> = ({Component, pageProps}) => {
-  
   return(
     <Wallet>
       <Layout>
