@@ -55,21 +55,19 @@ export class PerpetualsClient {
   constructor(clusterUrl: string, adminKey: string) {
 
     const connection = new Connection(clusterUrl);
-    this. provider = new AnchorProvider(
+    this.provider = new AnchorProvider.local(
         connection,
         window.solflare,
         { preflightCommitment: "confirmed" },
     );
 
-    // this.provider = AnchorProvider.local(connection,
-    //   window.solflare,
-    //   {preflightCommitment: "confirmed"},);
+    this.provider = AnchorProvider(connection,
+      window.solflare,
+      {preflightCommitment: "confirmed"},);
     setProvider(this.provider);
     this.program = workspace.Perpetuals as Program<Perpetuals>;
 
-    this.admin = Keypair.fromSecretKey(
-      new Uint8Array(JSON.parse(readFileSync(adminKey).toString()))
-    );
+    this.admin = adminKey;
 
     this.multisig = this.findProgramAddress("multisig");
     this.authority = this.findProgramAddress("transfer_authority");
