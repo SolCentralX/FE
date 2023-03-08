@@ -7,14 +7,15 @@ import UserPosition from '@/components /User/UserPosition'
 import UserStats from '@/components /User/UserStats'
 import TradeMain from '@/components /Trade/TradeMain'
 import { useEffect } from 'react'
-import {  getPoolKey } from './hook'
+import {  useFetchData } from './hook'
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
   
+  const {data, fetchData} = useFetchData()
   useEffect(() => {
       async function fetchDatas() {
-        const response = getPoolKey();
+        const response = await fetchData();
         console.log(response)
       }
       fetchDatas();

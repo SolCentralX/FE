@@ -7,6 +7,12 @@ import {
   utils,
   BN,
 } from "@project-serum/anchor"
+import {
+  useAnchorWallet,
+  useConnection,
+  useWallet,
+  AnchorWallet
+} from "@solana/wallet-adapter-react"
 import { IDL } from "../target/perpetuals"
 import {
   PublicKey,
@@ -36,10 +42,9 @@ export type PositionSide = "long" | "short"
 
 declare global {
   interface Window {
-      solflare?: any
-  }
+        solflare?: any
+    }
 }
-
 
 export class PerpetualsClient {
   provider: AnchorProvider;
@@ -50,18 +55,15 @@ export class PerpetualsClient {
   authority: { publicKey: PublicKey; bump: number };
   perpetuals: { publicKey: PublicKey; bump: number };
 
-  constructor(clusterUrl: string, adminKey: string) {
+  constructor(clusterUrl: string, adminKey: string, anchorWallet: any) {
 
     const connection = new Connection(clusterUrl);
     this.provider = new AnchorProvider(
         connection,
-        window.solflare,
+        anchorWallet,
         { preflightCommitment: "confirmed" },
     );
 
-    // this.provider = AnchorProvider(connection,
-    //   window.solflare,
-    //   {preflightCommitment: "confirmed"},);
     setProvider(this.provider);
     this.program = new Program(IDL, "2nv5ppjUhvze6m6RAZweUBVzt3KSbszsBuW1Yjh4kr8A", this.provider)
 
