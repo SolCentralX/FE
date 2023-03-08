@@ -33,6 +33,7 @@ import { sha256 } from "js-sha256"
 import { encode } from "bs58"
 import { readFileSync } from "fs"
 import { IDL } from '@/target/perpetuals';
+import { useAnchorWallet } from '@solana/wallet-adapter-react';
 
 export type PositionSide = "long" | "short"
 declare global {
@@ -50,12 +51,12 @@ export class PerpetualsClient {
   authority: { publicKey: PublicKey; bump: number };
   perpetuals: { publicKey: PublicKey; bump: number };
 
-  constructor(clusterUrl: string, adminKey: string) {
+  constructor(clusterUrl: string, adminKey: string, anchorWallet: any) {
 
     const connection = new Connection(clusterUrl);
     this.provider = new AnchorProvider(
         connection,
-        window.solflare,
+        anchorWallet,
         { preflightCommitment: "confirmed" },
     );
 
