@@ -67,3 +67,93 @@ export const fetchPoolsData = async () => {
     }
 }
 
+export const openPosition = async (
+  price: number,
+  collateral: typeof BN,
+  size: typeof BN,
+  side: PositionSide,
+  user,
+  fundingAccount: PublicKey,
+  positionAccount: PublicKey,
+  custody
+  ) => {
+    try {
+      const provider = getProvider()
+      const program = new Program(IDL, "2nv5ppjUhvze6m6RAZweUBVzt3KSbszsBuW1Yjh4kr8A", provider)
+      const perpetuals = await getPerpetuals(program)
+      const openPosition = await program.methods
+        .openPosition({
+          price: new BN(price * 1000000),
+          collateral,
+          size,
+          side: side === "long" ? { long: {} } : { short: {} },
+        })
+        .accounts({
+          owner: user.wallet.publicKey,
+          fundingAccount,
+          transferAuthority: authority.publicKey,
+          perpetuals: perpetuals,
+          pool: pool.publicKey,
+          position: positionAccount,
+          custody: custody.custody,
+          custodyOracleAccount: custody.oracleAccount,
+          custodyTokenAccount: custody.tokenAccount,
+          systemProgram: SystemProgram.programId,
+          tokenProgram: spl.TOKEN_PROGRAM_ID,
+        })
+        .signers([user.wallet])
+        .rpc()
+      return openPosition
+    } catch(error) {
+      if (this.printErrors) {
+        console.log(err);
+      }
+      throw err
+    }
+
+}
+
+export const getPoolKey = async () => {
+  const pools = findProgramAddress("pool", 'SLP-pool')
+  return pools.publicKey
+};
+
+export const closePosition = async (
+  price: number,
+  user,
+  receivingAccount,
+  positionAccount,
+  custody
+  ) => {
+    const provider = getProvider()
+    const program = new Program(IDL, "2nv5ppjUhvze6m6RAZweUBVzt3KSbszsBuW1Yjh4kr8A", provider)
+    try {
+    const closePosition = await program.methods
+        .closePosition({
+          price: new BN(price),
+        })
+        .accounts({
+          owner: user.wallet.publicKey,
+          receivingAccount,
+          transferAuthority: authority.publicKey,
+          perpetuals: perpetuals.publicKey,
+          pool: pool.publicKey,
+          position: positionAccount,
+          custody: custody.custody,
+          custodyOracleAccount: custody.oracleAccount,
+          custodyTokenAccount: custody.tokenAccount,
+          tokenProgram: spl.TOKEN_PROGRAM_ID,
+        })
+        .signers([user.wallet])
+        .rpc();
+      return closePosition
+    } catch (err) {
+      if (this.printErrors) {
+        console.log(err);
+      }
+      throw err;
+    }
+}
+
+
+

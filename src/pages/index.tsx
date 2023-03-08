@@ -7,7 +7,7 @@ import UserPosition from '@/components /User/UserPosition'
 import UserStats from '@/components /User/UserStats'
 import TradeMain from '@/components /Trade/TradeMain'
 import { useEffect } from 'react'
-import { fetchPoolsData } from './hook'
+import { fetchPoolsData, getPoolKey } from './hook'
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
@@ -31,7 +31,7 @@ export default function Home() {
       <div className='flex flex-row pl-10 h-5/6 w-full pt-5 justify-between pr-5 justify-center'>
         <div className='flex flex-col w-2/3 h-full pl-5'>
           <div className='flex flex-col w-full bg-[#17182c] h-2/3 pl-5 pt-3 space-y-1'>
-            chart
+          chart
           </div>
           <TradeMain/>
         </div>
@@ -40,3 +40,5 @@ export default function Home() {
     </>
   )
 }
+
+
