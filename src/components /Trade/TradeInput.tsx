@@ -12,7 +12,7 @@ const TradeInput = () => {
     setVisible(true);
   };
   return (
-    <div className='bg-[#2d42fc] h-1/5 items-center flex flex-row justify-between cursor-pointer'>
+    <div className='bg-[#2d42fc] h-1/5 items-center flex flex-row justify-between cursor-pointer rounded'>
       {!connected ? ( 
          <div className='w-full items-center flex flex-row justify-center space-x-2'>
             <AccountBalanceWalletIcon className='text-white'/>

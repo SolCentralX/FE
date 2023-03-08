@@ -16,7 +16,8 @@ import {
   AccountMeta,
   Keypair,
   SYSVAR_RENT_PUBKEY,
-  Connection
+  Connection,
+  clusterApiUrl
 } from "@solana/web3.js"
 import {
   getAccount,
@@ -31,17 +32,14 @@ import fetch from "node-fetch"
 import { sha256 } from "js-sha256"
 import { encode } from "bs58"
 import { readFileSync } from "fs"
+import { IDL } from '@/target/perpetuals';
 
 export type PositionSide = "long" | "short"
-
-// // Set our network to devent.
-// const cluster = "devnet";
-// const network = clusterApiUrl(cluster);
-
-// // Control's how we want to acknowledge when a trasnaction is "done".
-// const opts = {
-//     preflightCommitment: "confirmed",
-// };
+declare global {
+  interface Window {
+      solflare?: any
+  }
+}
 
 export class PerpetualsClient {
   provider: AnchorProvider;
@@ -55,7 +53,7 @@ export class PerpetualsClient {
   constructor(clusterUrl: string, adminKey: string) {
 
     const connection = new Connection(clusterUrl);
-    this. provider = new AnchorProvider(
+    this.provider = new AnchorProvider(
         connection,
         window.solflare,
         { preflightCommitment: "confirmed" },
@@ -65,11 +63,9 @@ export class PerpetualsClient {
     //   window.solflare,
     //   {preflightCommitment: "confirmed"},);
     setProvider(this.provider);
-    this.program = workspace.Perpetuals as Program<Perpetuals>;
+    this.program = new Program(IDL, "2nv5ppjUhvze6m6RAZweUBVzt3KSbszsBuW1Yjh4kr8A", this.provider);
 
-    this.admin = Keypair.fromSecretKey(
-      new Uint8Array(JSON.parse(readFileSync(adminKey).toString()))
-    );
+    this.admin = adminKey;
 
     this.multisig = this.findProgramAddress("multisig");
     this.authority = this.findProgramAddress("transfer_authority");
