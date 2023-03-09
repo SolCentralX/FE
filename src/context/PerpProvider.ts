@@ -7,7 +7,13 @@ import {
   utils,
   BN,
 } from "@project-serum/anchor"
-import { Perpetuals } from "../target/perpetuals"
+import {
+  useAnchorWallet,
+  useConnection,
+  useWallet,
+  AnchorWallet
+} from "@solana/wallet-adapter-react"
+import { IDL } from "../target/perpetuals"
 import {
   PublicKey,
   TransactionInstruction,
@@ -60,9 +66,6 @@ export class PerpetualsClient {
         { preflightCommitment: "confirmed" },
     );
 
-    // this.provider = AnchorProvider.local(connection,
-    //   window.solflare,
-    //   {preflightCommitment: "confirmed"},);
     setProvider(this.provider);
     this.program = new Program(IDL, "2nv5ppjUhvze6m6RAZweUBVzt3KSbszsBuW1Yjh4kr8A", this.provider);
     console.log(this.program, 'program0---------')
@@ -686,6 +689,66 @@ export class PerpetualsClient {
         throw err;
       });
   };
+
+  openPosition = async (
+    price: number,
+    collateral: typeof BN,
+    size: typeof BN,
+    side: PositionSide,
+    user,
+    fundingAccount: PublicKey,
+    positionAccount: PublicKey,
+    custody) => {
+    this.program.methods
+      .openPosition({
+        price: new BN(price * 1000000),
+        collateral,
+        size,
+        side: side === "long" ? { long: {} } : { short: {} },
+    })
+    .accounts({
+      owner: user.wallet.publicKey,
+      fundingAccount,
+      transferAuthority: this.authority.publicKey,
+      perpetuals: this.perpetuals.publicKey,
+      pool: this.pool.publicKey,
+      position: positionAccount,
+      custody: custody.custody,
+      custodyOracleAccount: custody.oracleAccount,
+      custodyTokenAccount: custody.tokenAccount,
+      systemProgram: SystemProgram.programId,
+      tokenProgram: spl.TOKEN_PROGRAM_ID,
+    })
+    .signers([user.wallet])
+    .rpc();
+  }
+  
+  closePosition = async(
+    price: number,
+    user,
+    receivingAccount,
+    positionAccount,
+    custody,
+  ) => {
+    this.program.methods
+    .closePosition({
+      price: new BN(price),
+    })
+    .accounts({
+      owner: user.wallet.publicKey,
+      receivingAccount,
+      transferAuthority: this.authority.publicKey,
+      perpetuals: this.perpetuals.publicKey,
+      pool: this.pool.publicKey,
+      position: positionAccount,
+      custody: custody.custody,
+      custodyOracleAccount: custody.oracleAccount,
+      custodyTokenAccount: custody.tokenAccount,
+      tokenProgram: spl.TOKEN_PROGRAM_ID,
+    })
+    .signers([user.wallet])
+    .rpc()
+  }
 }
 
 
