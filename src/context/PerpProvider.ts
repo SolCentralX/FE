@@ -674,7 +674,7 @@ export class PerpetualsClient {
 
   getAum = async (poolName: string) => {
     return await this.program.methods
-      .get_assets_under_management({})
+      .getAssetsUnderManagement({})
       .accounts({
         signer: this.provider.wallet.publicKey,
         perpetuals: this.perpetuals.publicKey,

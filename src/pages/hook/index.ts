@@ -31,16 +31,19 @@ export function useFetchData() {
   const [data, setData] = useState(initData)
   const client = new PerpetualsClient(network, "ApxxRUyjGDPNp4VWV9CRfKa1WE37PoJLjjREupUD5Bvt", anchorWallet)
   const provider = getProvider(anchorWallet)
+  console.log(provider?.wallet.publicKey.toString(), 'provider-----')
 
   const fetchData = async () => {
       try {
           const pools = await client.getPools();
           console.log(pools, 'pools-------')
-          const poolKey = await client.getPoolKey("SLP-Pool")
+          const poolKey = await client.getPoolKey("SLP-Pool").toString()
           console.log(poolKey, 'poolKey------->')
           // @ts-ignore
           const positions = await client.getUserPositions(provider.wallet.publicKey);
           console.log(positions, 'positions-------')
+          const aum = await client.getAum('SLP-Pool');
+          console.log(aum, 'aum-------')
       } catch (error) {
           console.log('error: ', error)
       }
