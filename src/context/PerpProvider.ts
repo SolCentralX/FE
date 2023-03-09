@@ -65,6 +65,7 @@ export class PerpetualsClient {
     //   {preflightCommitment: "confirmed"},);
     setProvider(this.provider);
     this.program = new Program(IDL, "2nv5ppjUhvze6m6RAZweUBVzt3KSbszsBuW1Yjh4kr8A", this.provider);
+    console.log(this.program, 'program0---------')
 
     this.admin = adminKey;
 
@@ -508,8 +509,8 @@ export class PerpetualsClient {
   getEntryPriceAndFee = async (
     poolName: string,
     tokenMint: PublicKey,
-    collateral: typeof BN,
-    size: typeof BN,
+    collateral: BN,
+    size: BN,
     side: PositionSide
   ) => {
     return await this.program.methods
@@ -673,7 +674,7 @@ export class PerpetualsClient {
 
   getAum = async (poolName: string) => {
     return await this.program.methods
-      .get_assets_under_management({})
+      .getAssetsUnderManagement({})
       .accounts({
         signer: this.provider.wallet.publicKey,
         perpetuals: this.perpetuals.publicKey,

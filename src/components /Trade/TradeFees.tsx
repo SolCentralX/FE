@@ -10,11 +10,12 @@ const TradeFees = () => {
           <div>Fees</div>
         </div>
         <div className='flex flex-col text-white space-y-2 items-end'>
-          <div>-</div>
-          <div>-</div>
-          <div>-</div>
-          <div>0.32%</div>
-         
+          <div>--</div>
+          <div>--</div>
+          <div>18.69</div>
+          {/* 18.69 */}
+          <div>2.6%</div>
+          {/* 2.6% */}
         </div>
     </div>
   )

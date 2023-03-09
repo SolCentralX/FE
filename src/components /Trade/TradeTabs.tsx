@@ -11,11 +11,11 @@ const TradeTabs = () => {
 
   return (
     <div className='flex flex-row text-white'>
-      <button className='w-1/2 bg-[#2d2e3f] p-2 text-sm items-center flex flex-row justify-center space-x-3 rounded-l'>
+      <button className='w-1/2 bg-[#2d42fc] p-2 text-sm items-center flex flex-row justify-center space-x-3 rounded-l'>
         <TrendingUpIcon/>
         <span>Long</span>
       </button>
-      <button className='w-1/2 bg-[#2d42fc] p-2 text-sm items-center flex flex-row justify-center space-x-3 rounded-r'>
+      <button className='w-1/2 bg-[#2d2e3f] p-2 text-sm items-center flex flex-row justify-center space-x-3 rounded-r'>
         <TrendingDownIcon/>
         <span>Short</span>
       </button>
