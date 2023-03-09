@@ -49,10 +49,10 @@ export function useFetchData() {
   return {data, fetchData}
 }
 
-export function useOpenPosition() {
+export function useOpenPosition(price: number, collateral: typeof BN, size: typeof BN, side: PositionSide, user: any, fundingAccount: PublicKey, positionAccount: PublicKey, custody: any) {
   const anchorWallet = useAnchorWallet()
   const client = new PerpetualsClient(network, "ApxxRUyjGDPNp4VWV9CRfKa1WE37PoJLjjREupUD5Bvt", anchorWallet)
-  client.openPosition()
+  client.openPosition(price, collateral, size, side, user, fundingAccount, positionAccount, custody)
 }
 
 export function useClosePosition() {
