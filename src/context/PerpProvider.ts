@@ -8,13 +8,6 @@ import {
   BN,
 } from "@project-serum/anchor"
 import {
-  useAnchorWallet,
-  useConnection,
-  useWallet,
-  AnchorWallet
-} from "@solana/wallet-adapter-react"
-import { IDL } from "../target/perpetuals"
-import {
   PublicKey,
   TransactionInstruction,
   Transaction,
@@ -68,7 +61,6 @@ export class PerpetualsClient {
 
     setProvider(this.provider);
     this.program = new Program(IDL, "2nv5ppjUhvze6m6RAZweUBVzt3KSbszsBuW1Yjh4kr8A", this.provider);
-    console.log(this.program, 'program0---------')
 
     this.admin = adminKey;
 
@@ -692,8 +684,8 @@ export class PerpetualsClient {
 
   openPosition = async (
     price: number,
-    collateral: typeof BN,
-    size: typeof BN,
+    collateral: BN,
+    size: BN,
     side: PositionSide,
     user,
     fundingAccount: PublicKey,
@@ -711,13 +703,13 @@ export class PerpetualsClient {
       fundingAccount,
       transferAuthority: this.authority.publicKey,
       perpetuals: this.perpetuals.publicKey,
-      pool: this.pool.publicKey,
+      pool: this.getPoolKey("SLP-Pool"),
       position: positionAccount,
-      custody: custody.custody,
+      custody: custody,
       custodyOracleAccount: custody.oracleAccount,
       custodyTokenAccount: custody.tokenAccount,
       systemProgram: SystemProgram.programId,
-      tokenProgram: spl.TOKEN_PROGRAM_ID,
+      tokenProgram: TOKEN_PROGRAM_ID,
     })
     .signers([user.wallet])
     .rpc();
@@ -744,7 +736,7 @@ export class PerpetualsClient {
       custody: custody.custody,
       custodyOracleAccount: custody.oracleAccount,
       custodyTokenAccount: custody.tokenAccount,
-      tokenProgram: spl.TOKEN_PROGRAM_ID,
+      tokenProgram: TOKEN_PROGRAM_ID,
     })
     .signers([user.wallet])
     .rpc()

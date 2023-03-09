@@ -1,4 +1,4 @@
-
+// @ts-nocheck
 import { clusterApiUrl, Connection, Keypair, PublicKey } from '@solana/web3.js';
 import { PerpetualsClient } from '@/context/PerpProvider';
 import { useState } from 'react';
@@ -53,8 +53,8 @@ export function useFetchData() {
   }
 
   // const custodies: any = []
-  // custodies.push(generateCustody(6));
   // custodies.push(generateCustody(9));
+  // custodies.push(generateCustody(6));
 
   const fetchData = async () => {
 
@@ -64,11 +64,11 @@ export function useFetchData() {
       // const poolKey = await client.getPoolKey("SLP-Pool")
       // console.log(poolKey, 'poolKey------->')
       if (provider) {
-        const pools: any = await client.getPools();
-        console.log(pools[0].aumUsd.toString(), pools, 'pools-------')
+        // const pools: any = await client.getPools();
+        // console.log(pools[0].aumUsd.toString(), pools, 'pools-------')
 
-        const pool: any = await client.getPool("SLP-Pool");
-        console.log(pool, 'pool-------')
+        // const pool: any = await client.getPool("SLP-Pool");
+        // console.log(pool, 'pool-------')
         // const aum: any = await client.getAum("SLP-Pool");
         // console.log(aum, 'aum-------')
         // @ts-ignore
@@ -91,6 +91,48 @@ export function useFetchData() {
         //     "long"
         // )
         // console.log(pnl, 'pnl-------')
+
+        const oraclePrice = await client.getOraclePrice(
+          "SLP-Pool",
+          new PublicKey("So11111111111111111111111111111111111111112"),
+          false
+        )
+        console.log(oraclePrice.toString(), 'oraclePrice------<')
+
+        // const exitPriceAndFee = await client.getExitPriceAndFee(
+        //   provider.wallet.publicKey,
+        //   "SLP-Pool",
+        //   new PublicKey("So11111111111111111111111111111111111111112"),
+        //   "long"
+        // )
+        // console.log(exitPriceAndFee.toString(), 'exitPriceAndFee------<')
+
+        const positionKey = await client.getPositionKey(
+          provider.wallet.publicKey,
+          "SLP-Pool",
+          new PublicKey("So11111111111111111111111111111111111111112"),
+          "long"
+        )
+        console.log(positionKey, 'positionKey-------')
+
+        const custoday = await client.getCustodyKey(
+          "SLP-Pool",
+          new PublicKey("So11111111111111111111111111111111111111112"),
+        )
+        console.log(custoday, 'custoday-------')
+
+        // client.openPosition(
+        //   oraclePrice*0.000001,
+        //   toTokenAmount(1, 6),
+        //   toTokenAmount(1, 6),
+        //   "long",
+        //   provider,
+        //   provider.wallet.publicKey,
+        //   positionKey,
+        //   custoday
+        //   // custodies[0]
+        // )
+
         // setData({pools: pools, position: null, entryPriceandFee: entryPriceandFee})
       }
     } catch (error) {
