@@ -1,13 +1,26 @@
 import Head from 'next/head'
 import Trade from '@/components /Buy/Trade'
 import TradeMain from '@/components /Trade/TradeMain'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useFetchData } from './hook'
 import { useFetchProvider } from '@/hooks'
 
 export default function Home() {
   const {data, fetchData} = useFetchData()
   const {provider} = useFetchProvider()
+  const [tradeData, setTradeData] = useState({
+    pools: [],
+    position: null,
+    oraclePrice: null,
+    entryPriceandFee: {
+      price: null,
+      fee: null
+    }
+  })
+
+  useEffect(() => {
+    setTradeData(data)
+  }, [data])
 
   useEffect(() => {
       async function fetchDatas() {
@@ -15,7 +28,7 @@ export default function Home() {
         console.log(response)
       }
       fetchDatas();
-  },[fetchData, provider])
+  },[provider])
 
   return (
     <>
@@ -52,7 +65,7 @@ export default function Home() {
           </div>
           <TradeMain/>
         </div>
-        <Trade/>
+        <Trade entryPriceandFee={tradeData.entryPriceandFee} oraclePrice={tradeData.oraclePrice}/>
       </div>
     </>
   )

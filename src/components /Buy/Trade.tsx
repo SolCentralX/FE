@@ -6,15 +6,15 @@ import TradePay from '../Trade/TradePay'
 import TradeRecieve from '../Trade/TradeRecieve'
 import TradeTabs from '../Trade/TradeTabs'
 
-const Trade = () => {
+const Trade = (props: any) => {
   return (
     <div className='flex flex-col w-1/4 h-4/5 space-y-2 pr-10'>
     <TradeTabs/>
     <div className='flex flex-col bg-[#17182c] p-3 space-y-5 justify-center rounded'>
-        <TradePay/>
-        <TradeRecieve/>
+        <TradePay oraclePrice={props.oraclePrice}/>
+        {/* <TradeRecieve/> */}
         <TradeLeverage/>
-        <TradeFees/>  
+        <TradeFees entryPriceandFee={props.entryPriceandFee}/>  
     </div>
     <TradeInput/>
     </div>

@@ -24,7 +24,9 @@ import {
   createAssociatedTokenAccountInstruction,
   createCloseAccountInstruction,
   createSyncNativeInstruction,
+  createAssociatedTokenAccount,
   TOKEN_PROGRAM_ID,
+  ASSOCIATED_TOKEN_PROGRAM_ID
 } from "@solana/spl-token"
 import JSBI from "jsbi"
 import fetch from "node-fetch"
@@ -63,6 +65,8 @@ export class PerpetualsClient {
     this.program = new Program(IDL, "2nv5ppjUhvze6m6RAZweUBVzt3KSbszsBuW1Yjh4kr8A", this.provider);
 
     this.admin = adminKey;
+
+    this.admins = [];
 
     this.multisig = this.findProgramAddress("multisig");
     this.authority = this.findProgramAddress("transfer_authority");
@@ -120,6 +124,86 @@ export class PerpetualsClient {
     ]).publicKey;
   };
 
+  generateCustody = (decimals: number, poolName: any) => {
+    const pool = this.getPoolKey(poolName)
+    let mint = new PublicKey("So11111111111111111111111111111111111111112");
+    let tokenAccount = this.findProgramAddress("custody_token_account", [
+      pool,
+      mint,
+    ]).publicKey;
+    let oracleAccount = this.findProgramAddress("oracle_account", [
+      pool,
+      mint,
+    ]).publicKey;
+    let custody = this.findProgramAddress("custody", [
+      pool,
+      mint,
+    ]).publicKey;
+    return {
+      mint,
+      tokenAccount,
+      oracleAccount,
+      custody,
+      decimals,
+    };
+  };
+
+  getUsers = async (poolName) => {
+    let users = []
+    for (let i = 0; i < 2; ++i) {
+      let wallet = this.provider.wallet;
+      const pool = this.getPoolKey(poolName)
+      let mint = new PublicKey("So11111111111111111111111111111111111111112");
+      const custodies = []
+      custodies.push(this.generateCustody(9, poolName))
+      // await this.requestAirdrop(wallet.publicKey);
+      let tokenAccounts = [];
+      let positionAccountsLong = [];
+      let positionAccountsShort = [];
+      this.admins.push(this.provider.wallet);
+      for (const custody of custodies) {
+        let tokenAccount = await this.getFundingAccountKey(
+          mint,
+          this.provider.wallet.publicKey,
+          false,
+          TOKEN_PROGRAM_ID,
+          ASSOCIATED_TOKEN_PROGRAM_ID
+        )
+
+        tokenAccounts.push(tokenAccount);
+  
+        let positionAccount = this.findProgramAddress("position", [
+          wallet.publicKey,
+          pool,
+          custody.custody,
+          [1],
+        ]).publicKey;
+
+        positionAccountsLong.push(positionAccount);
+  
+        positionAccount = this.findProgramAddress("position", [
+          wallet.publicKey,
+          pool,
+          custody.custody,
+          [2],
+        ]).publicKey;
+        positionAccountsShort.push(positionAccount);
+      }
+  
+      users.push({
+        wallet,
+        tokenAccounts,
+        lpTokenAccount: PublicKey.default,
+        positionAccountsLong,
+        positionAccountsShort,
+      });
+    }
+    return users
+  }
+
+
+
+
   getCustodyTokenAccountKey = (poolName: string, tokenMint: PublicKey) => {
     return this.findProgramAddress("custody_token_account", [
       this.getPoolKey(poolName),
@@ -155,6 +239,29 @@ export class PerpetualsClient {
     );
   };
 
+  getCustodyMetas = async (poolName: string) => {
+    let pool = await this.getPool(poolName);
+    let custodies = await this.program.account.custody.fetchMultiple(
+      pool.tokens.map((t) => t.custody)
+    );
+    let custodyMetas = [];
+    for (const token of pool.tokens) {
+      custodyMetas.push({
+        isSigner: false,
+        isWritable: false,
+        pubkey: token.custody,
+      });
+    }
+    for (const custody of custodies) {
+      custodyMetas.push({
+        isSigner: false,
+        isWritable: false,
+        pubkey: custody.oracle.oracleAccount,
+      });
+    }
+    return custodyMetas;
+  };
+
   getMultisig = async () => {
     return this.program.account.multisig.fetch(this.multisig.publicKey);
   };
@@ -174,6 +281,22 @@ export class PerpetualsClient {
       side === "long" ? [1] : [0],
     ]).publicKey;
   };
+
+  getFundingAccountKey = async (
+    mint: PublicKey,
+    owner: PublicKey,
+    allowOwnerOffCurve?: boolean,
+    programId?: PublicKey,
+    associatedTokenProgramId?: PublicKey
+  ) => {
+    return await getAssociatedTokenAddress(
+      mint,
+      owner,
+      allowOwnerOffCurve,
+      programId,
+      associatedTokenProgramId
+    )
+  }
 
   getUserPosition = async (
     wallet: PublicKey,
@@ -675,6 +798,7 @@ export class PerpetualsClient {
         perpetuals: this.perpetuals.publicKey,
         pool: this.getPoolKey(poolName),
       })
+      .remainingAccounts(await this.getCustodyMetas(poolName))
       .view()
       .catch((err) => {
         console.error(err);
@@ -705,7 +829,7 @@ export class PerpetualsClient {
       perpetuals: this.perpetuals.publicKey,
       pool: this.getPoolKey("SLP-Pool"),
       position: positionAccount,
-      custody: custody,
+      custody: custody.custody,
       custodyOracleAccount: custody.oracleAccount,
       custodyTokenAccount: custody.tokenAccount,
       systemProgram: SystemProgram.programId,
