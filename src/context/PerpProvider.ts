@@ -21,7 +21,7 @@ import {
 import {
   getAccount,
   getAssociatedTokenAddress,
-  createAssociatedTokenAccountInstruction,
+  createAssociatedTokenAccount,
   createCloseAccountInstruction,
   createSyncNativeInstruction,
   createAssociatedTokenAccount,
@@ -865,6 +865,14 @@ export class PerpetualsClient {
     .signers([user.wallet])
     .rpc()
   }
+
+  createFundingAccount = async(connection, payer, mint, owner) => {
+  await createAssociatedTokenAccount(
+    connection,
+    payer,
+    mint,
+    owner
+  );}
 }
 
 

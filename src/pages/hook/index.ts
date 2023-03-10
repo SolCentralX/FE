@@ -152,6 +152,22 @@ export function useFetchData() {
         // console.log(users, 'users------->')
 
 
+        const fundingAccount = 
+          await client.createFundingAccount(
+            provider.connection, 
+            provider.wallet.publicKey, 
+            new PublicKey("So11111111111111111111111111111111111111112"), 
+            provider.wallet.publicKey 
+          )
+        console.log("fundingaccount----->", fundingAccount)
+
+
+    //     this.provider.connection,
+    // this.provider.wallet.publicKey,
+    // new PublicKey("So11111111111111111111111111111111111111112"),
+    // this.provider.wallet.publicKey,
+    // { confirmOptions: "confirmed" },
+    // TOKEN_PROGRAM_ID,
         // client.openPosition(
         //   oraclePrice*0.000001,
         //   toTokenAmount(1, 6),
