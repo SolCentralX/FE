@@ -1,34 +1,41 @@
 import Head from 'next/head'
 import Trade from '@/components /Buy/Trade'
 import TradeMain from '@/components /Trade/TradeMain'
-import { useEffect, useState } from 'react'
-import { useFetchData } from './hook'
+import { useEffect, useMemo, useState } from 'react'
+import { data, fetchData, useFetchData } from './hook'
 import { useFetchProvider } from '@/hooks'
+import { useAtom } from 'jotai'
+// import { setItem } from '@/hooks/localStorage';
 
 export default function Home() {
-  const {data, fetchData} = useFetchData()
   const {provider} = useFetchProvider()
-  const [tradeData, setTradeData] = useState({
-    pools: [],
-    position: null,
-    oraclePrice: null,
-    entryPriceandFee: {
-      price: null,
-      fee: null
-    }
-  })
+  const [datas , setData] = useAtom(data)
+  // @ts-ignore
+  // setItem('positionData', [])
+  // console.log(datas, 'datas-------->')
+  // const [tradeData, setTradeData] = useState({
+  //   pools: [],
+  //   position: null,
+  //   oraclePrice: null,
+  //   solBalance: null,
+  //   entryPriceandFee: {
+  //     price: null,
+  //     fee: null
+  //   }
+  // })
 
-  useEffect(() => {
-    setTradeData(data)
-  }, [data])
+  // useEffect(() => {
+  //   setTradeData(data)
+  // }, [data])
+  useFetchData()
 
-  useEffect(() => {
-      async function fetchDatas() {
-        const response = await fetchData();
-        console.log(response)
-      }
-      fetchDatas();
-  },[provider])
+  // useEffect(() => {
+  //     async function fetchDatas() {
+  //       const response = await fetchData();
+  //       console.log(response)
+  //     }
+  //     fetchDatas();
+  // },[provider])
 
   return (
     <>
@@ -38,7 +45,7 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className='flex flex-row pl-10 h-5/6 w-full pt-12 justify-between pr-5 justify-center'>
+      <div className='flex flex-row pl-10 h-5/6 w-full pt-12 justify-between pr-5 justify-center' style={{minWidth: '1200px'}}>
         <div className='flex flex-col w-2/3 h-full pl-5'>
           <div className='flex flex-col w-full bg-[#17182c] h-2/3 pl-5 pt-3 space-y-1 rounded'>
             <h2 className='text-white text-3xl'>SLP-Pool</h2>
@@ -65,7 +72,7 @@ export default function Home() {
           </div>
           <TradeMain/>
         </div>
-        <Trade entryPriceandFee={tradeData.entryPriceandFee} oraclePrice={tradeData.oraclePrice}/>
+        <Trade datas={datas}/>
       </div>
     </>
   )

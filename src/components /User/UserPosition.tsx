@@ -13,10 +13,6 @@ const UserPosition = () => {
     </div>
     <div className='overflow-auto h-8 space-y-1'>
       <UserPositionCard/>
-      <UserPositionCard/>
-      <UserPositionCard/>
-      <UserPositionCard/>
-      <UserPositionCard/>
     </div>
     </>
   )

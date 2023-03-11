@@ -27,6 +27,7 @@
     "eslint": "8.34.0",
     "eslint-config-next": "13.2.1",
     "fs": "^0.0.1-security",
+    "jotai": "^2.0.3",
     "js-sha256": "^0.9.0",
     "jsbi": "^4.3.0",
     "next": "13.2.1",
@@ -34,6 +35,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-slider": "^2.0.4",
+    "swr": "^2.1.0",
     "typescript": "4.9.5"
   },
   "devDependencies": {
