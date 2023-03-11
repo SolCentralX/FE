@@ -23,7 +23,7 @@ export const data = atom<any>({
 
 export function useFetchData() {
   const anchorWallet = useAnchorWallet()
-  const [, setData] = useAtom(data)
+  // const [, setData] = useAtom(data)
   const { provider, network, findProgramAddress } = useFetchProvider()
   // const initData = {
   //   pools: [],
@@ -44,17 +44,17 @@ export function useFetchData() {
     return new BN(uiAmount * 10 ** decimals);
   }
 
-  useSWRImmutable(
-    "fetchData",
-    async () => {
-        const datas = await fetchData(client, connection, provider, toTokenAmount)
-        // console.log(datas, 'datas--------->')
-        setData(datas)
-    },
-    {
-      refreshInterval: 10000,
-    },
-  )
+  // useSWRImmutable(
+  //   "fetchData",
+  //   async () => {
+  //       const datas = await fetchData(client, connection, provider, toTokenAmount)
+  //       // console.log(datas, 'datas--------->')
+  //       setData(datas)
+  //   },
+  //   {
+  //     refreshInterval: 100000,
+  //   },
+  // )
 
   // const pool = findProgramAddress("pool", program, "test pool");
 
@@ -84,144 +84,284 @@ export function useFetchData() {
   // const custodies: any = []
   // custodies.push(generateCustody(9));
   // custodies.push(generateCustody(6));
-}
-
-export const fetchData = async (client: any, connection: any, provider: any, toTokenAmount: any) => {
-
-  try {
-    // const pools = await client.getPools();
-    // console.log(pools, 'pools-------')
-    // const poolKey = await client.getPoolKey("SLP-Pool")
-    // console.log(poolKey, 'poolKey------->')
-    if (provider) {
-      // console.log(provider, 'provider balance------->')
-      const pools: any = await client.getPools();
-      console.log(pools[0].aumUsd.toString(), pools, 'pools-------')
-
-      const fetchBalance = await connection.getBalance(provider?.wallet.publicKey)
-      const solBalance = fetchBalance / LAMPORTS_PER_SOL
-
-      console.log(solBalance, LAMPORTS_PER_SOL, 'connection----->')
-
-      // const pool: any = await client.getPool("SLP-Pool");
-      // console.log(pool, 'pool-------')
-      // const aum: any = await client.getAum("SLP-Pool");
-      // console.log(aum.toString(), 'aum-------')
-
-      // @ts-ignore
-      // const positions = await client.getUserPositions(provider.wallet.publicKey);
-      // console.log(positions, 'positions-------')
-
-      const entryPriceandFee = await client.getEntryPriceAndFee(
-        "SLP-Pool",
-        new PublicKey("So11111111111111111111111111111111111111112"),
-        toTokenAmount(1, 6),
-        toTokenAmount(1, 6),
-        "long"
-      );
-      console.log(entryPriceandFee.price.toString() * 0.000001, entryPriceandFee.fee.toString() * 0.000001, 'entryPriceandFee-------')
-
-      // console.log(provider.wallet.publicKey, 'provider.wallet.publicKey------>')
-      // const pnl = await client.getPnl(
-      //     // @ts-ignore
-      //     provider.wallet.publicKey,
-      //     "SLP-Pool",
-      //     new PublicKey("So11111111111111111111111111111111111111112"),
-      //     "long"
-      // )
-      // console.log(pnl, 'pnl-------')
-
-      const oraclePrice = await client.getOraclePrice(
-        "SLP-Pool",
-        new PublicKey("So11111111111111111111111111111111111111112"),
-        false
-      )
-      console.log(oraclePrice.toString(), 'oraclePrice------<')
-
-      // const exitPriceAndFee = await client.getExitPriceAndFee(
-      //   provider.wallet.publicKey,
-      //   "SLP-Pool",
-      //   new PublicKey("So11111111111111111111111111111111111111112"),
-      //   "long"
-      // )
-      // console.log(exitPriceAndFee.toString(), 'exitPriceAndFee------<')
-
-      // const positionKey = await client.getPositionKey(
-      //   provider.wallet.publicKey,
-      //   "SLP-Pool",
-      //   new PublicKey("So11111111111111111111111111111111111111112"),
-      //   "long"
-      // )
-      // console.log(positionKey, 'positionKey-------')
-
-      // const custoday = await client.getCustody(
-      //   "SLP-Pool",
-      //   new PublicKey("So11111111111111111111111111111111111111112"),
-      // )
-      // const custodies: any = []
-      // custodies.push(client.generateCustody(9))
 
 
-      // const custoday = client.generateCustody(9, "SLP-Pool")
-      // console.log(custoday, 'custoday-------')
-
-
-      // const fundingAccount = await client.getFundingAccountKey(
-      //   new PublicKey("So11111111111111111111111111111111111111112"),
-      //   provider.wallet.publicKey,
-      //   false,
-      //   TOKEN_PROGRAM_ID,
-      //   ASSOCIATED_TOKEN_PROGRAM_ID
-      // )
-      // console.log(fundingAccount, 'fundingAccount------>')
-
-      // const users = await client.getUsers("SLP-Pool")
-      // console.log(users, 'users------->')
-
-
-      // const fundingAccount = 
-      //   await client.createFundingAccount(
-      //     provider.connection, 
-      //     provider.wallet.publicKey, 
-      //     new PublicKey("So11111111111111111111111111111111111111112"), 
-      //     provider.wallet.publicKey 
-      //   )
-      // console.log("fundingaccount----->", fundingAccount)
-
-
-  //     this.provider.connection,
-  // this.provider.wallet.publicKey,
-  // new PublicKey("So11111111111111111111111111111111111111112"),
-  // this.provider.wallet.publicKey,
-  // { confirmOptions: "confirmed" },
-  // TOKEN_PROGRAM_ID,
-      // client.openPosition(
-      //   oraclePrice*0.000001,
-      //   toTokenAmount(1, 6),
-      //   toTokenAmount(1, 6),
-      //   "long",
-      //   users[0],
-      //   fundingAccount,
-      //   positionKey,
-      //   custoday
-      //   // custodies[0]
-      // )
+  const fetchData = async () => {
+    try {
+      // const pools = await client.getPools();
+      // console.log(pools, 'pools-------')
+      // const poolKey = await client.getPoolKey("SLP-Pool")
+      // console.log(poolKey, 'poolKey------->')
+      if (provider) {
+        // console.log(provider, 'provider balance------->')
+        const pools: any = await client.getPools();
+        console.log(pools[0].aumUsd.toString(), pools, 'pools-------')
+  
+        const fetchBalance = await connection.getBalance(provider?.wallet.publicKey)
+        const solBalance = fetchBalance / LAMPORTS_PER_SOL
+  
+        console.log(solBalance, LAMPORTS_PER_SOL, 'connection----->')
+  
+        // const pool: any = await client.getPool("SLP-Pool");
+        // console.log(pool, 'pool-------')
+        // const aum: any = await client.getAum("SLP-Pool");
+        // console.log(aum.toString(), 'aum-------')
+  
+        // @ts-ignore
+        // const positions = await client.getUserPositions(provider.wallet.publicKey);
+        // console.log(positions, 'positions-------')
+  
+        const entryPriceandFee = await client.getEntryPriceAndFee(
+          "SLP-Pool",
+          new PublicKey("So11111111111111111111111111111111111111112"),
+          toTokenAmount(1, 6),
+          toTokenAmount(1, 6),
+          "long"
+        );
+        console.log(entryPriceandFee.price.toString() * 0.000001, entryPriceandFee.fee.toString() * 0.000001, 'entryPriceandFee-------')
+  
+        // console.log(provider.wallet.publicKey, 'provider.wallet.publicKey------>')
+        // const pnl = await client.getPnl(
+        //     // @ts-ignore
+        //     provider.wallet.publicKey,
+        //     "SLP-Pool",
+        //     new PublicKey("So11111111111111111111111111111111111111112"),
+        //     "long"
+        // )
+        // console.log(pnl, 'pnl-------')
+  
+        // const oraclePrice = await client.getOraclePrice(
+        //   "SLP-Pool",
+        //   new PublicKey("So11111111111111111111111111111111111111112"),
+        //   false
+        // )
+        // console.log(oraclePrice.toString(), 'oraclePrice------<')
+  
+        // const exitPriceAndFee = await client.getExitPriceAndFee(
+        //   provider.wallet.publicKey,
+        //   "SLP-Pool",
+        //   new PublicKey("So11111111111111111111111111111111111111112"),
+        //   "long"
+        // )
+        // console.log(exitPriceAndFee.toString(), 'exitPriceAndFee------<')
+  
+        // const positionKey = await client.getPositionKey(
+        //   provider.wallet.publicKey,
+        //   "SLP-Pool",
+        //   new PublicKey("So11111111111111111111111111111111111111112"),
+        //   "long"
+        // )
+        // console.log(positionKey, 'positionKey-------')
+  
+        // const custoday = await client.getCustody(
+        //   "SLP-Pool",
+        //   new PublicKey("So11111111111111111111111111111111111111112"),
+        // )
+        // const custodies: any = []
+        // custodies.push(client.generateCustody(9))
+  
+  
+        // const custoday = client.generateCustody(9, "SLP-Pool")
+        // console.log(custoday, 'custoday-------')
+  
+  
+        // const fundingAccount = await client.getFundingAccountKey(
+        //   new PublicKey("So11111111111111111111111111111111111111112"),
+        //   provider.wallet.publicKey,
+        //   false,
+        //   TOKEN_PROGRAM_ID,
+        //   ASSOCIATED_TOKEN_PROGRAM_ID
+        // )
+        // console.log(fundingAccount, 'fundingAccount------>')
+  
+        // const users = await client.getUsers("SLP-Pool")
+        // console.log(users, 'users------->')
+  
+  
+        // const fundingAccount = 
+        //   await client.createFundingAccount(
+        //     provider.connection, 
+        //     provider.wallet.publicKey, 
+        //     new PublicKey("So11111111111111111111111111111111111111112"), 
+        //     provider.wallet.publicKey 
+        //   )
+        // console.log("fundingaccount----->", fundingAccount)
+  
+  
+    //     this.provider.connection,
+    // this.provider.wallet.publicKey,
+    // new PublicKey("So11111111111111111111111111111111111111112"),
+    // this.provider.wallet.publicKey,
+    // { confirmOptions: "confirmed" },
+    // TOKEN_PROGRAM_ID,
+        // client.openPosition(
+        //   oraclePrice*0.000001,
+        //   toTokenAmount(1, 6),
+        //   toTokenAmount(1, 6),
+        //   "long",
+        //   users[0],
+        //   fundingAccount,
+        //   positionKey,
+        //   custoday
+        //   // custodies[0]
+        // )
+        return {
+          solBalance: solBalance,
+          entryPriceandFee: entryPriceandFee
+        }
+  
+        // setData({pools: pools, position: null, oraclePrice: oraclePrice, solBalance: solBalance, entryPriceandFee: entryPriceandFee})
+      }
       return {
-        solBalance: solBalance,
-        entryPriceandFee: entryPriceandFee
+        solBalance: null,
+        entryPriceandFee: {
+          price: null,
+          fee: null
+        }
       }
-
-      // setData({pools: pools, position: null, oraclePrice: oraclePrice, solBalance: solBalance, entryPriceandFee: entryPriceandFee})
+    } catch (error) {
+      console.log('error: ', error)
     }
-    return {
-      solBalance: null,
-      entryPriceandFee: {
-        price: null,
-        fee: null
-      }
-    }
-  } catch (error) {
-    console.log('error: ', error)
   }
+
+  return {fetchData}
 }
 
+// export const fetchData = async (client: any, connection: any, provider: any, toTokenAmount: any) => {
+
+//   try {
+//     // const pools = await client.getPools();
+//     // console.log(pools, 'pools-------')
+//     // const poolKey = await client.getPoolKey("SLP-Pool")
+//     // console.log(poolKey, 'poolKey------->')
+//     if (provider) {
+//       // console.log(provider, 'provider balance------->')
+//       const pools: any = await client.getPools();
+//       console.log(pools[0].aumUsd.toString(), pools, 'pools-------')
+
+//       const fetchBalance = await connection.getBalance(provider?.wallet.publicKey)
+//       const solBalance = fetchBalance / LAMPORTS_PER_SOL
+
+//       console.log(solBalance, LAMPORTS_PER_SOL, 'connection----->')
+
+//       // const pool: any = await client.getPool("SLP-Pool");
+//       // console.log(pool, 'pool-------')
+//       // const aum: any = await client.getAum("SLP-Pool");
+//       // console.log(aum.toString(), 'aum-------')
+
+//       // @ts-ignore
+//       // const positions = await client.getUserPositions(provider.wallet.publicKey);
+//       // console.log(positions, 'positions-------')
+
+//       const entryPriceandFee = await client.getEntryPriceAndFee(
+//         "SLP-Pool",
+//         new PublicKey("So11111111111111111111111111111111111111112"),
+//         toTokenAmount(1, 6),
+//         toTokenAmount(1, 6),
+//         "long"
+//       );
+//       console.log(entryPriceandFee.price.toString() * 0.000001, entryPriceandFee.fee.toString() * 0.000001, 'entryPriceandFee-------')
+
+//       // console.log(provider.wallet.publicKey, 'provider.wallet.publicKey------>')
+//       // const pnl = await client.getPnl(
+//       //     // @ts-ignore
+//       //     provider.wallet.publicKey,
+//       //     "SLP-Pool",
+//       //     new PublicKey("So11111111111111111111111111111111111111112"),
+//       //     "long"
+//       // )
+//       // console.log(pnl, 'pnl-------')
+
+//       const oraclePrice = await client.getOraclePrice(
+//         "SLP-Pool",
+//         new PublicKey("So11111111111111111111111111111111111111112"),
+//         false
+//       )
+//       console.log(oraclePrice.toString(), 'oraclePrice------<')
+
+//       // const exitPriceAndFee = await client.getExitPriceAndFee(
+//       //   provider.wallet.publicKey,
+//       //   "SLP-Pool",
+//       //   new PublicKey("So11111111111111111111111111111111111111112"),
+//       //   "long"
+//       // )
+//       // console.log(exitPriceAndFee.toString(), 'exitPriceAndFee------<')
+
+//       // const positionKey = await client.getPositionKey(
+//       //   provider.wallet.publicKey,
+//       //   "SLP-Pool",
+//       //   new PublicKey("So11111111111111111111111111111111111111112"),
+//       //   "long"
+//       // )
+//       // console.log(positionKey, 'positionKey-------')
+
+//       // const custoday = await client.getCustody(
+//       //   "SLP-Pool",
+//       //   new PublicKey("So11111111111111111111111111111111111111112"),
+//       // )
+//       // const custodies: any = []
+//       // custodies.push(client.generateCustody(9))
+
+
+//       // const custoday = client.generateCustody(9, "SLP-Pool")
+//       // console.log(custoday, 'custoday-------')
+
+
+//       // const fundingAccount = await client.getFundingAccountKey(
+//       //   new PublicKey("So11111111111111111111111111111111111111112"),
+//       //   provider.wallet.publicKey,
+//       //   false,
+//       //   TOKEN_PROGRAM_ID,
+//       //   ASSOCIATED_TOKEN_PROGRAM_ID
+//       // )
+//       // console.log(fundingAccount, 'fundingAccount------>')
+
+//       // const users = await client.getUsers("SLP-Pool")
+//       // console.log(users, 'users------->')
+
+
+//       // const fundingAccount = 
+//       //   await client.createFundingAccount(
+//       //     provider.connection, 
+//       //     provider.wallet.publicKey, 
+//       //     new PublicKey("So11111111111111111111111111111111111111112"), 
+//       //     provider.wallet.publicKey 
+//       //   )
+//       // console.log("fundingaccount----->", fundingAccount)
+
+
+//   //     this.provider.connection,
+//   // this.provider.wallet.publicKey,
+//   // new PublicKey("So11111111111111111111111111111111111111112"),
+//   // this.provider.wallet.publicKey,
+//   // { confirmOptions: "confirmed" },
+//   // TOKEN_PROGRAM_ID,
+//       // client.openPosition(
+//       //   oraclePrice*0.000001,
+//       //   toTokenAmount(1, 6),
+//       //   toTokenAmount(1, 6),
+//       //   "long",
+//       //   users[0],
+//       //   fundingAccount,
+//       //   positionKey,
+//       //   custoday
+//       //   // custodies[0]
+//       // )
+//       return {
+//         solBalance: solBalance,
+//         entryPriceandFee: entryPriceandFee
+//       }
+
+//       // setData({pools: pools, position: null, oraclePrice: oraclePrice, solBalance: solBalance, entryPriceandFee: entryPriceandFee})
+//     }
+//     return {
+//       solBalance: null,
+//       entryPriceandFee: {
+//         price: null,
+//         fee: null
+//       }
+//     }
+//   } catch (error) {
+//     console.log('error: ', error)
+//   }
+// }

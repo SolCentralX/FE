@@ -22,7 +22,11 @@ interface PayProps {
 const TradePay: React.FC<PayProps> = ({ entryPriceandFee, solBalance }) => {
   const [solAmount, setSolAmount] = useState(0)
   const [solPay, setSolPay] = useState(0)
-  const _solBalance = solBalance
+  const [_solBalance, setSolBalance] = useState(solBalance)
+
+  useEffect(() => {
+    setSolBalance(solBalance)
+  }, [solBalance])
   // console.log(entryPriceandFee, solBalance, 'entryPriceandFee------>');
   const { price } = entryPriceandFee
   // const [, setPositionData] = useAtom(positionData)
@@ -66,20 +70,37 @@ const TradePay: React.FC<PayProps> = ({ entryPriceandFee, solBalance }) => {
     setVisible(true);
   };
 
-  // const getLocalPositionData = useCallback(() => {
-  //   return getItem('positionData')
-  // }, [])
+  const getLocalPositionData = useCallback(() => {
+    // @ts-ignore
+    localStorage.setItem('positionData', JSON.stringify([{
+      netValue: '--',
+      size: null,
+      price: null,
+      side: null
+    }]))
+    console.log(localStorage.getItem('positionData'), '000000000')
+    // @ts-ignore
+    return JSON.parse(localStorage.getItem('positionData'))
+  }, [])
+
+  const clearData = () => {
+    setSolAmount(0)
+    setSolPay(0)
+    setSolBalance(13)
+  }
 
   const handlerOpen = useCallback(() => {
     setOpen(true)
-    // const arr: any = getLocalPositionData
-    // arr.push({
-    //   netValue: solAmount,
-    //   size: solAmount,
-    //   price: price,
-    //   side: side
-    // })
-    // setItem('positionData', arr)
+    clearData()
+    // const arr: any = getLocalPositionData()
+    // // arr.push({
+    // //   netValue: solAmount,
+    // //   size: solAmount,
+    // //   price: price,
+    // //   side: side
+    // // })
+    // // console.log(arr, 'arr-----');
+    // // localStorage.setItem('positionData', arr)
   }, [solAmount, price, side])
 
   const handleClose = useCallback(() => {
@@ -87,7 +108,8 @@ const TradePay: React.FC<PayProps> = ({ entryPriceandFee, solBalance }) => {
   }, [])
 
   const formatButtonLabel = useCallback(() => {
-    return !solAmount ? 'Enter an amount' : solBalance < solAmount ? 'Insufficient SOL Balance' : `${side} SOL`
+    const formatSide = side === 'long' ? 'Long' : 'Shotrt'
+    return !solAmount ? 'Enter an amount' : solBalance < solAmount ? 'Insufficient SOL Balance' : `${formatSide} SOL`
   }, [solAmount, solBalance, side])
 
 
@@ -102,8 +124,8 @@ const TradePay: React.FC<PayProps> = ({ entryPriceandFee, solBalance }) => {
               <input className='w-full text-white bg-[#2d2e3f]' style={{ outline: 'none' }} onChange={solAmountChangeHandle} type="text" value={solAmount} />
             </div>
           </div>
-          <div className='flex flex-col pt-2 pb-2 pr-3 space-y-4 items-end'>
-            <div className='text-slate-500 text-xs'>Balance: {_solBalance ? _solBalance : null}</div>
+          <div className='flex flex-col pt-2 pb-2 pr-3 space-y-4 items-end' style={{width: "88px"}}>
+            <div className='text-slate-500 text-xs'>Balance: {_solBalance ? _solBalance : '--'}</div>
             <div className='text-white text-2xl'>SOL</div>
           </div>
         </div>
@@ -128,8 +150,8 @@ const TradePay: React.FC<PayProps> = ({ entryPriceandFee, solBalance }) => {
           ) : (
             <>
               <div className='flex justify-center w-full items-center'>
-                <button onClick={handlerOpen} disabled={isDisabled} className={`bg-[#2d42fc] text-center h-10 mr-4 ${isDisabled ? 'cursor-not-allowed' : 'cursor-pointer'}`}>{formatButtonLabel()}</button>
-                <SendIcon className='pr-2 cursor-pointer' />
+                <button onClick={handlerOpen} disabled={isDisabled} className={`text-white bg-[#2d42fc] text-center h-10 mr-4 ${isDisabled ? 'cursor-not-allowed' : 'cursor-pointer'}`}>{formatButtonLabel()}</button>
+                {/* <SendIcon className='pr-2 cursor-pointer' /> */}
               </div>
               {/* <input type="text" placeholder='Enter an amount' className='bg-[#2d42fc] text-center h-10'/> */}
             </>
@@ -138,7 +160,7 @@ const TradePay: React.FC<PayProps> = ({ entryPriceandFee, solBalance }) => {
           {/* {open && <Alert severity="success">Success!</Alert>} */}
           <Snackbar open={open} autoHideDuration={6000} anchorOrigin={{ vertical: 'top', horizontal: 'right' }} onClose={handleClose}>
             <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
-              {side} Success
+              {side === 'long' ? 'Long' : 'Shotrt'} Success!
             </Alert>
           </Snackbar>
         </div>

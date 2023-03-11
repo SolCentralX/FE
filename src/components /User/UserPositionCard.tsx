@@ -1,20 +1,42 @@
 
 // import { getItem } from '@/hooks/localStorage'
-import { getItem } from '@/hooks/localStorage'
-import { useAtom } from 'jotai'
-import React, { useCallback, useEffect, useMemo } from 'react'
+// import { getItem } from '@/hooks/localStorage'
+// import { useAtom } from 'jotai'
+import React, { useCallback, useEffect, useState } from 'react'
 // import { positionData } from '../Trade/TradePay'
 
 const UserPositionCard = () => {
-  // const list: any = useMemo(() => {
-  //   return getItem('positionData')
-  // }, []) || 
-  const list = [{
-    netValue: null,
+  // @ts-ignore
+  const [list, setList] = useState([{
+    netValue: '--',
     size: null,
     price: null,
-    side: '--'
-  }]
+    side: null
+  }])
+  // const list: any = JSON.parse(localStorage.getItem('positionData')) || [{
+  //   netValue: null,
+  //   size: null,
+  //   price: null,
+  //   side: '--'
+  // }]
+  const getLocalPositionData = () => {
+    // @ts-ignore
+    // localStorage.setItem('positionData', JSON.stringify([{
+    //   netValue: '--',
+    //   size: null,
+    //   price: null,
+    //   side: null
+    // }]))
+    // console.log(localStorage.getItem('positionData'), '000000000')
+    console.log(typeof localStorage.getItem('positionData'), 'ppppp')
+    // @ts-ignore
+    // setList(JSON.parse(localStorage.getItem('positionData')))
+  }
+
+  useEffect(() => {
+    getLocalPositionData()
+  }, [])
+  
   
   return (
     <div className='flex flex-row text-white text-center justify-between leading-10'>

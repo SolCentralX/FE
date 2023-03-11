@@ -2,16 +2,25 @@ import Head from 'next/head'
 import Trade from '@/components /Buy/Trade'
 import TradeMain from '@/components /Trade/TradeMain'
 import { useEffect, useMemo, useState } from 'react'
-import { data, fetchData, useFetchData } from './hook'
+import { useFetchData } from './hook'
 import { useFetchProvider } from '@/hooks'
 import { useAtom } from 'jotai'
 // import { setItem } from '@/hooks/localStorage';
 
 export default function Home() {
   const {provider} = useFetchProvider()
-  const [datas , setData] = useAtom(data)
+  // const [datas , setData] = useAtom(data)
+  const [flag, setFlag] = useState(false)
+  const {fetchData} = useFetchData()
+  const [datas, setDatas] = useState({
+    solBalance: null,
+    entryPriceandFee: {
+      price: null,
+      fee: null
+    }
+  })
   // @ts-ignore
-  // setItem('positionData', [])
+  // localStorage.setItem('positionData', [])
   // console.log(datas, 'datas-------->')
   // const [tradeData, setTradeData] = useState({
   //   pools: [],
@@ -27,15 +36,20 @@ export default function Home() {
   // useEffect(() => {
   //   setTradeData(data)
   // }, [data])
-  useFetchData()
+  // useFetchData()
+  const fetchDatas = async () => {
+    const response: any = await fetchData();
+    setDatas(response)
+    console.log(response)
+  }
 
-  // useEffect(() => {
-  //     async function fetchDatas() {
-  //       const response = await fetchData();
-  //       console.log(response)
-  //     }
-  //     fetchDatas();
-  // },[provider])
+  useEffect(() => {
+    // console.log(provider, 'provider-------->');
+    if (!provider) {
+      return
+    }
+    fetchDatas();
+  },[provider])
 
   return (
     <>
