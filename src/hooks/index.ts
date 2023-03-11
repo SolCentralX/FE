@@ -42,6 +42,12 @@ export function useFetchProvider() {
         return { publicKey: res[0], bump: res[1] };
       };
 
+       const connection = new Connection(clusterApiUrl('devnet'))
+        // console.log("position----->", position)
+        // setData({pools: pools, position: null, entryPriceandFee: entryPriceandFee})
+        const userATA = await client.createFundingAccount(connection)
+        console.log('Funding account----', userATA)
+
 
     return {
         provider,

@@ -872,6 +872,48 @@ export class PerpetualsClient {
     mint,
     owner
   );}
+
+  createFundingAccount = async(connection) => {
+    const token_acc = await this.getFundingAccountKey(
+      new PublicKey("So11111111111111111111111111111111111111112"),
+      this.provider.wallet.publicKey,
+      false,
+      TOKEN_PROGRAM_ID,
+      ASSOCIATED_TOKEN_PROGRAM_ID
+    )
+    const transaction = new Transaction().add(
+      createAssociatedTokenAccountInstruction(
+        this.provider.wallet.publicKey,
+        token_acc,
+        this.provider.wallet.publicKey,
+        new PublicKey("So11111111111111111111111111111111111111112"),
+        "2nv5ppjUhvze6m6RAZweUBVzt3KSbszsBuW1Yjh4kr8A"
+      )
+    );
+    transaction.recentBlockhash = (
+      await connection.getLatestBlockhash()
+    ).blockhash
+    transaction.feePayer = this.provider.wallet.publicKey
+    console.log(transaction) 
+    const txn = await this.provider.wallet
+      .signTransaction(transaction)
+      .catch((err) => {
+        console.log(err);
+        throw new Error("User rejected the request.");
+      });
+    const buffer = await txn.serialize().toString("base64");
+    console.log("Sending...");
+
+    let txid = await connection
+      .sendEncodedTransaction(buffer)
+      .catch((err) => {
+        throw new Error(`Unexpected Error Occurred: ${err}`);
+      });
+
+    console.log(
+      `Transaction Submitted: https://solana.fm/address/${txid}?cluster=devnet-solana`
+    );
+    }
 }
 
 
