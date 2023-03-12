@@ -19,7 +19,7 @@ interface PayProps {
   solBalance: any
 }
 
-const TradePay: React.FC<PayProps> = ({ entryPriceandFee, solBalance }) => {
+const TradePay: React.FC<PayProps> = ({  solBalance }) => {
   const [solAmount, setSolAmount] = useState(0)
   const [solPay, setSolPay] = useState(0)
   const [_solBalance, setSolBalance] = useState(solBalance)
@@ -28,7 +28,7 @@ const TradePay: React.FC<PayProps> = ({ entryPriceandFee, solBalance }) => {
     setSolBalance(solBalance)
   }, [solBalance])
   // console.log(entryPriceandFee, solBalance, 'entryPriceandFee------>');
-  const { price } = entryPriceandFee
+  // const { price } = entryPriceandFee
   // const [, setPositionData] = useAtom(positionData)
   // const oraclePrice = props.oraclePrice
   const [leverage, serLeverage] = useState(0)
@@ -47,19 +47,19 @@ const TradePay: React.FC<PayProps> = ({ entryPriceandFee, solBalance }) => {
     setSolAmount(e.target.value)
     // setPay(e.target.value * Number(oraclePrice ? oraclePrice.toString() : 1))
     // (Math.floor(price * 0.000001 * 10000)/10000).toFixed(4)
-    const formatPrice = price * 0.000001
+    // const formatPrice = price * 0.000001
     const formatPay = leverage > 0 ? e.target.value * leverage : e.target.value
-    setSolPay(Number((Math.floor(formatPay * formatPrice * 10000) / 10000).toFixed(4)))
+    // setSolPay(Number((Math.floor(formatPay * formatPrice * 10000) / 10000).toFixed(4)))
     // setSDXPay(e.target.value * 2)
     // setSDXAmount(e.target.value * 2)
     // }
-  }, [leverage, price])
+  }, [leverage])
 
   useEffect(() => {
-    const formatPrice = price * 0.000001
+    // const formatPrice = price * 0.000001
     const formatPay = leverage > 0 ? solAmount * leverage : solAmount
-    setSolPay(Number((Math.floor(formatPay * formatPrice * 10000) / 10000).toFixed(4)))
-  }, [leverage, price, solAmount])
+    // setSolPay(Number((Math.floor(formatPay * formatPrice * 10000) / 10000).toFixed(4)))
+  }, [leverage, solAmount])
 
   const { connected, disconnect, publicKey } = useWallet()
   const { setVisible } = useWalletModal()
@@ -101,7 +101,7 @@ const TradePay: React.FC<PayProps> = ({ entryPriceandFee, solBalance }) => {
     // // })
     // // console.log(arr, 'arr-----');
     // // localStorage.setItem('positionData', arr)
-  }, [solAmount, price, side])
+  }, [solAmount, side])
 
   const handleClose = useCallback(() => {
     setOpen(false)
@@ -140,7 +140,8 @@ const TradePay: React.FC<PayProps> = ({ entryPriceandFee, solBalance }) => {
           </div>
         </div>
         <TradeLeverage leverage={getLeverage} />
-        <TradeFees entryPriceandFee={entryPriceandFee} leverage={leverage} />
+        {/* <TradeFees entryPriceandFee={entryPriceandFee} leverage={leverage} /> */}
+        <TradeFees/>
         <div className='bg-[#2d42fc] h-1/5 items-center flex flex-row justify-between cursor-pointer rounded'>
           {!connected ? (
             <div className='w-full items-center flex flex-row justify-center space-x-2'>

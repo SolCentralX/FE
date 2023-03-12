@@ -19,6 +19,7 @@ const Trade: React.FC<TradeProps> = () => {
   return (
     <div className='flex flex-col w-1/4 h-4/5 space-y-2 pr-10'>
       {/* <TradePay entryPriceandFee={datas.entryPriceandFee} solBalance={datas.solBalance}/>   */}
+      <TradePay/>
     </div>
   )
 }

@@ -836,7 +836,7 @@ export class PerpetualsClient {
       systemProgram: SystemProgram.programId,
       tokenProgram: TOKEN_PROGRAM_ID,
     })
-    .signers([this.provider.wallet])
+    .signers([])
     .rpc();
   }
   

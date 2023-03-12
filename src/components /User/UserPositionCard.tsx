@@ -43,12 +43,12 @@ const UserPositionCard = () => {
       {
         list.map((item: any, ind: number) => {
           return (
-            <>
+            <div key={ind}>  
               <div className='leading-10'>{item.side}</div>
               <div>{item.netValue ? item.netValue : '--'}</div>
               <div>{item.size ? item.size : '--'}</div>
               <div>{item.price ? item.price : '--'}</div>
-            </>
+            </div>
           )
         })
       }
