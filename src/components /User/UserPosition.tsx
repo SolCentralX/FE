@@ -8,14 +8,10 @@ const UserPosition = () => {
       <div>Position</div>
       <div>Net Value</div>
       <div>Size</div>
-      <div>Collateral</div>
+      {/* <div>Collateral</div> */}
       <div>Entry Price</div>
     </div>
     <div className='overflow-auto h-8 space-y-1'>
-      <UserPositionCard/>
-      <UserPositionCard/>
-      <UserPositionCard/>
-      <UserPositionCard/>
       <UserPositionCard/>
     </div>
     </>

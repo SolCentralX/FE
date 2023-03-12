@@ -12,12 +12,12 @@ export const Tabs = () => {
         <button className=' rounded-lg text-white text-lg p-1 w-20' onClick={()=>router.push('/')}> 
             Dashboard
         </button>
-        <button className='rounded-lg w-20 text-white text-sm p-2'> 
+        {/* <button className='rounded-lg w-20 text-white text-sm p-2'> 
             Earn
         </button>
         <button className=' rounded-lg  w-20 text-white text-sm p-2'> 
             Create LP
-        </button>
+        </button> */}
     </div>
 )
 }
