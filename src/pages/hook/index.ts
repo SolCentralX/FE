@@ -95,12 +95,12 @@ export function useFetchData() {
       if (provider) {
         // console.log(provider, 'provider balance------->')
         const pools: any = await client.getPools();
-        console.log(pools[0].aumUsd.toString(), pools, 'pools-------')
+        // console.log(pools[0].aumUsd.toString(), pools, 'pools-------')
   
         const fetchBalance = await connection.getBalance(provider?.wallet.publicKey)
         const solBalance = fetchBalance / LAMPORTS_PER_SOL
   
-        console.log(solBalance, LAMPORTS_PER_SOL, 'connection----->')
+        // console.log(solBalance, LAMPORTS_PER_SOL, 'connection----->')
   
         // const pool: any = await client.getPool("SLP-Pool");
         // console.log(pool, 'pool-------')
@@ -118,7 +118,13 @@ export function useFetchData() {
           toTokenAmount(1, 6),
           "long"
         );
-        console.log(entryPriceandFee.price.toString() * 0.000001, entryPriceandFee.fee.toString() * 0.000001, 'entryPriceandFee-------')
+        // console.log(entryPriceandFee.price.toString() * 0.000001, entryPriceandFee.fee.toString() * 0.000001, 'entryPriceandFee-------')
+
+       // console.log("position----->", position)
+       // setData({pools: pools, position: null, entryPriceandFee: entryPriceandFee})
+      //  const userATA = await client.createFundingAccount()
+      //  console.log('Funding account----', userATA)
+
   
         // console.log(provider.wallet.publicKey, 'provider.wallet.publicKey------>')
         // const pnl = await client.getPnl(
@@ -130,11 +136,11 @@ export function useFetchData() {
         // )
         // console.log(pnl, 'pnl-------')
   
-        // const oraclePrice = await client.getOraclePrice(
-        //   "SLP-Pool",
-        //   new PublicKey("So11111111111111111111111111111111111111112"),
-        //   false
-        // )
+        const oraclePrice = await client.getOraclePrice(
+          "SLP-Pool",
+          new PublicKey("So11111111111111111111111111111111111111112"),
+          false
+        )
         // console.log(oraclePrice.toString(), 'oraclePrice------<')
   
         // const exitPriceAndFee = await client.getExitPriceAndFee(
@@ -145,12 +151,12 @@ export function useFetchData() {
         // )
         // console.log(exitPriceAndFee.toString(), 'exitPriceAndFee------<')
   
-        // const positionKey = await client.getPositionKey(
-        //   provider.wallet.publicKey,
-        //   "SLP-Pool",
-        //   new PublicKey("So11111111111111111111111111111111111111112"),
-        //   "long"
-        // )
+        const positionKey = await client.getPositionKey(
+          provider.wallet.publicKey,
+          "SLP-Pool",
+          new PublicKey("So11111111111111111111111111111111111111112"),
+          "long"
+        )
         // console.log(positionKey, 'positionKey-------')
   
         // const custoday = await client.getCustody(
@@ -161,31 +167,37 @@ export function useFetchData() {
         // custodies.push(client.generateCustody(9))
   
   
-        // const custoday = client.generateCustody(9, "SLP-Pool")
+        const custoday = client.generateCustody(9, "SLP-Pool")
         // console.log(custoday, 'custoday-------')
   
   
-        // const fundingAccount = await client.getFundingAccountKey(
-        //   new PublicKey("So11111111111111111111111111111111111111112"),
-        //   provider.wallet.publicKey,
-        //   false,
-        //   TOKEN_PROGRAM_ID,
-        //   ASSOCIATED_TOKEN_PROGRAM_ID
-        // )
-        // console.log(fundingAccount, 'fundingAccount------>')
-  
-        // const users = await client.getUsers("SLP-Pool")
-        // console.log(users, 'users------->')
-  
-  
-        // const fundingAccount = 
-        //   await client.createFundingAccount(
-        //     provider.connection, 
-        //     provider.wallet.publicKey, 
-        //     new PublicKey("So11111111111111111111111111111111111111112"), 
-        //     provider.wallet.publicKey 
-        //   )
-        // console.log("fundingaccount----->", fundingAccount)
+        const fundingAccount = await client.getFundingAccountKey(
+          new PublicKey("So11111111111111111111111111111111111111112"),
+          provider.wallet.publicKey,
+          false,
+          TOKEN_PROGRAM_ID,
+          ASSOCIATED_TOKEN_PROGRAM_ID
+        )
+        // console.log(fundingAccount.toString(), 'fundingAccount------>')
+
+        const users = await client.getUsers("SLP-Pool")
+        console.log(users, 'users------->')
+
+        const openPosition = client.openPosition(
+          oraclePrice*0.000001,
+          toTokenAmount(1, 6),
+          toTokenAmount(1, 6),
+          "long",
+          fundingAccount,
+          positionKey,
+          custoday
+          // custodies[0]
+        )
+        console.log(openPosition, 'openPosition------>')
+          
+      const positions = await client.getUserPositions(provider.wallet.publicKey);
+      console.log(positions, 'positions-------')
+        
   
   
     //     this.provider.connection,
@@ -194,17 +206,6 @@ export function useFetchData() {
     // this.provider.wallet.publicKey,
     // { confirmOptions: "confirmed" },
     // TOKEN_PROGRAM_ID,
-        // client.openPosition(
-        //   oraclePrice*0.000001,
-        //   toTokenAmount(1, 6),
-        //   toTokenAmount(1, 6),
-        //   "long",
-        //   users[0],
-        //   fundingAccount,
-        //   positionKey,
-        //   custoday
-        //   // custodies[0]
-        // )
         return {
           solBalance: solBalance,
           entryPriceandFee: entryPriceandFee
@@ -320,48 +321,3 @@ export function useFetchData() {
 //       // console.log(users, 'users------->')
 
 
-//       // const fundingAccount = 
-//       //   await client.createFundingAccount(
-//       //     provider.connection, 
-//       //     provider.wallet.publicKey, 
-//       //     new PublicKey("So11111111111111111111111111111111111111112"), 
-//       //     provider.wallet.publicKey 
-//       //   )
-//       // console.log("fundingaccount----->", fundingAccount)
-
-
-//   //     this.provider.connection,
-//   // this.provider.wallet.publicKey,
-//   // new PublicKey("So11111111111111111111111111111111111111112"),
-//   // this.provider.wallet.publicKey,
-//   // { confirmOptions: "confirmed" },
-//   // TOKEN_PROGRAM_ID,
-//       // client.openPosition(
-//       //   oraclePrice*0.000001,
-//       //   toTokenAmount(1, 6),
-//       //   toTokenAmount(1, 6),
-//       //   "long",
-//       //   users[0],
-//       //   fundingAccount,
-//       //   positionKey,
-//       //   custoday
-//       //   // custodies[0]
-//       // )
-//       return {
-//         solBalance: solBalance,
-//         entryPriceandFee: entryPriceandFee
-//       }
-
-//       // setData({pools: pools, position: null, oraclePrice: oraclePrice, solBalance: solBalance, entryPriceandFee: entryPriceandFee})
-//     }
-//     return {
-//       solBalance: null,
-//       entryPriceandFee: {
-//         price: null,
-//         fee: null
-//       }
-//     }
-//   } catch (error) {
-//     console.log('error: ', error)
-//   }
-// }

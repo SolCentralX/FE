@@ -16,7 +16,8 @@ import {
   Keypair,
   SYSVAR_RENT_PUBKEY,
   Connection,
-  clusterApiUrl
+  clusterApiUrl,
+  sendAndConfirmTransaction
 } from "@solana/web3.js"
 import {
   getAccount,
@@ -24,6 +25,7 @@ import {
   createAssociatedTokenAccount,
   createCloseAccountInstruction,
   createSyncNativeInstruction,
+  createAssociatedTokenAccountInstruction,
   TOKEN_PROGRAM_ID,
   ASSOCIATED_TOKEN_PROGRAM_ID
 } from "@solana/spl-token"
@@ -60,6 +62,7 @@ export class PerpetualsClient {
         { preflightCommitment: "confirmed" },
     );
 
+    this.wallet = anchorWallet
     setProvider(this.provider);
     this.program = new Program(IDL, "2nv5ppjUhvze6m6RAZweUBVzt3KSbszsBuW1Yjh4kr8A", this.provider);
 
@@ -810,7 +813,6 @@ export class PerpetualsClient {
     collateral: BN,
     size: BN,
     side: PositionSide,
-    user,
     fundingAccount: PublicKey,
     positionAccount: PublicKey,
     custody) => {
@@ -822,7 +824,7 @@ export class PerpetualsClient {
         side: side === "long" ? { long: {} } : { short: {} },
     })
     .accounts({
-      owner: user.wallet.publicKey,
+      owner: this.provider.wallet.publicKey,
       fundingAccount,
       transferAuthority: this.authority.publicKey,
       perpetuals: this.perpetuals.publicKey,
@@ -834,7 +836,7 @@ export class PerpetualsClient {
       systemProgram: SystemProgram.programId,
       tokenProgram: TOKEN_PROGRAM_ID,
     })
-    .signers([user.wallet])
+    .signers([this.provider.wallet])
     .rpc();
   }
   
@@ -865,35 +867,35 @@ export class PerpetualsClient {
     .rpc()
   }
 
-  createFundingAccount = async(connection, payer, mint, owner) => {
-  await createAssociatedTokenAccount(
-    connection,
-    payer,
-    mint,
-    owner
-  );}
+  // createFundingAccount = async() => {
+  // await createAssociatedTokenAccount(
+  //   this.provider.connectiononnection,
+  //   this.provider.wallet,
+  //   new PublicKey("So11111111111111111111111111111111111111112"),
+  //   this.provider.wallet.publicKey
+  // );}
 
-  createFundingAccount = async(connection) => {
+  createFundingAccount = async() => {
+
     const token_acc = await this.getFundingAccountKey(
       new PublicKey("So11111111111111111111111111111111111111112"),
       this.provider.wallet.publicKey,
       false,
       TOKEN_PROGRAM_ID,
       ASSOCIATED_TOKEN_PROGRAM_ID
-    )
+    ) 
     const transaction = new Transaction().add(
       createAssociatedTokenAccountInstruction(
         this.provider.wallet.publicKey,
         token_acc,
         this.provider.wallet.publicKey,
         new PublicKey("So11111111111111111111111111111111111111112"),
-        "2nv5ppjUhvze6m6RAZweUBVzt3KSbszsBuW1Yjh4kr8A"
       )
     );
     transaction.recentBlockhash = (
-      await connection.getLatestBlockhash()
+      await this.provider.connection.getLatestBlockhash()
     ).blockhash
-    transaction.feePayer = this.provider.wallet.publicKey
+    transaction.feePayer = new PublicKey(this.provider.wallet.publicKey)
     console.log(transaction) 
     const txn = await this.provider.wallet
       .signTransaction(transaction)
@@ -904,7 +906,7 @@ export class PerpetualsClient {
     const buffer = await txn.serialize().toString("base64");
     console.log("Sending...");
 
-    let txid = await connection
+    let txid = await this.provider.connection
       .sendEncodedTransaction(buffer)
       .catch((err) => {
         throw new Error(`Unexpected Error Occurred: ${err}`);
@@ -913,7 +915,6 @@ export class PerpetualsClient {
     console.log(
       `Transaction Submitted: https://solana.fm/address/${txid}?cluster=devnet-solana`
     );
-    }
+  }
 }
-
 
