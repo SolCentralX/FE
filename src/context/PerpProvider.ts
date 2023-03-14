@@ -16,7 +16,8 @@ import {
   Keypair,
   SYSVAR_RENT_PUBKEY,
   Connection,
-  clusterApiUrl
+  clusterApiUrl,
+  sendAndConfirmTransaction
 } from "@solana/web3.js"
 import {
   getAccount,
@@ -61,6 +62,7 @@ export class PerpetualsClient {
         AnchorProvider.defaultOptions()
     );
 
+    this.wallet = anchorWallet
     setProvider(this.provider);
 
     this.program = new Program(IDL, "2nv5ppjUhvze6m6RAZweUBVzt3KSbszsBuW1Yjh4kr8A", this.provider);
@@ -880,7 +882,6 @@ export class PerpetualsClient {
   }
 
   createFundingAccount = async() => {
-
     const token_acc = await this.getFundingAccountKey(
       new PublicKey("So11111111111111111111111111111111111111112"),
       this.provider.wallet.publicKey,
@@ -921,5 +922,4 @@ export class PerpetualsClient {
     );
   }
 }
-
 

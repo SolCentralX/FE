@@ -41,7 +41,6 @@ export function useFetchProvider() {
         return { publicKey: res[0], bump: res[1] };
       };
 
-
     return {
         provider,
         // program,

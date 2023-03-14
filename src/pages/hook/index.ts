@@ -137,16 +137,4 @@ export const useFetchApprove = () => {
   }
 }
 
-export const useFetchPositionsData = (size?, price?, side?) => {
-  if (size && price && side) {
-
-  }
-  return [{
-    position: side,
-    netValue: size * price,
-    size,
-    price
-  }]
-}
-
 
