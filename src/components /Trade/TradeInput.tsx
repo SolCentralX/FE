@@ -23,7 +23,6 @@ const TradeInput: React.FC<buttonProps> = ({solAmount, solBalance, side}) => {
 
   const handlerOpen = useCallback(() => {
     setIsSuccess(true)
-
   }, [])
 
 
@@ -38,7 +37,13 @@ const TradeInput: React.FC<buttonProps> = ({solAmount, solBalance, side}) => {
       ): (
         <>
           <div className='flex justify-center w-full items-center' style={{width: 'max-content'}}>
-            <button onClick={handlerOpen} disabled={isDisabled} className={`bg-[#2d42fc] text-center h-10 mr-4 ${isDisabled ? 'cursor-not-allowed' : 'cursor-pointer'}`}>{!solAmount ? 'Enter an amount' : solBalance < solAmount ? 'Insufficient SOL Balance' : `${side} SOL`}</button>
+            <button
+              onClick={handlerOpen}
+              // disabled={isDisabled}
+              className={`bg-[#2d42fc] text-center h-10 mr-4 ${isDisabled ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+            >
+              {!solAmount ? 'Enter an amount' : solBalance < solAmount ? 'Insufficient SOL Balance' : `${side} SOL`}
+            </button>
             <SendIcon className='pr-2 cursor-pointer'/>
           </div>
           {/* <input type="text" placeholder='Enter an amount' className='bg-[#2d42fc] text-center h-10'/> */}

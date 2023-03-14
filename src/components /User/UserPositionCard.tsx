@@ -1,9 +1,5 @@
-
-// import { getItem } from '@/hooks/localStorage'
-// import { getItem } from '@/hooks/localStorage'
-// import { useAtom } from 'jotai'
 import React, { useCallback, useEffect, useState } from 'react'
-// import { positionData } from '../Trade/TradePay'
+import emitter from "../../context/ev"
 
 const UserPositionCard = () => {
   // @ts-ignore
@@ -13,29 +9,10 @@ const UserPositionCard = () => {
     price: null,
     side: null
   }])
-  // const list: any = JSON.parse(localStorage.getItem('positionData')) || [{
-  //   netValue: null,
-  //   size: null,
-  //   price: null,
-  //   side: '--'
-  // }]
-  const getLocalPositionData = () => {
-    // @ts-ignore
-    // localStorage.setItem('positionData', JSON.stringify([{
-    //   netValue: '--',
-    //   size: null,
-    //   price: null,
-    //   side: null
-    // }]))
-    // console.log(localStorage.getItem('positionData'), '000000000')
-    console.log(typeof localStorage.getItem('positionData'), 'ppppp')
-    // @ts-ignore
-    // setList(JSON.parse(localStorage.getItem('positionData')))
-  }
 
-  useEffect(() => {
-    getLocalPositionData()
-  }, [])
+  emitter.addListener("tradeSuccess",(list)=>{
+    setList(list)
+  })
   
   
   return (
@@ -44,7 +21,7 @@ const UserPositionCard = () => {
         list.map((item: any, ind: number) => {
           return (
             <>
-              <div className='leading-10'>{item.side}</div>
+              <div className='leading-10'>{item.side ?((item.side === 'long' ? 'Long' : 'Shotrt')) : '--'}</div>
               <div>{item.netValue ? item.netValue : '--'}</div>
               <div>{item.size ? item.size : '--'}</div>
               <div>{item.price ? item.price : '--'}</div>

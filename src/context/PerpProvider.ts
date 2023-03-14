@@ -23,6 +23,7 @@ import {
   getAssociatedTokenAddress,
   createAssociatedTokenAccount,
   createCloseAccountInstruction,
+  createAssociatedTokenAccountInstruction,
   createSyncNativeInstruction,
   TOKEN_PROGRAM_ID,
   ASSOCIATED_TOKEN_PROGRAM_ID
@@ -57,10 +58,11 @@ export class PerpetualsClient {
     this.provider = new AnchorProvider(
         connection,
         anchorWallet,
-        { preflightCommitment: "confirmed" },
+        AnchorProvider.defaultOptions()
     );
 
     setProvider(this.provider);
+
     this.program = new Program(IDL, "2nv5ppjUhvze6m6RAZweUBVzt3KSbszsBuW1Yjh4kr8A", this.provider);
 
     this.admin = adminKey;
@@ -123,21 +125,30 @@ export class PerpetualsClient {
     ]).publicKey;
   };
 
-  generateCustody = (decimals: number, poolName: any) => {
+  generateCustody = async (decimals: number, poolName: any) => {
     const pool = this.getPoolKey(poolName)
     let mint = new PublicKey("So11111111111111111111111111111111111111112");
+    console.log(mint, 'mint-----')
+    // debugger
+    let oracleAccount = await this.getCustodyOracleAccountKey(poolName, mint)
+    // let tokenAccount = this.getCustodyTokenAccountKey(poolName, mint)
+    // let custody = await this.getCustody(poolName, mint)
+
+    // let oracleAccount = this.findProgramAddress("oracle_account", [
+    //   pool,
+    //   mint,
+    // ]).publicKey;
+
     let tokenAccount = this.findProgramAddress("custody_token_account", [
       pool,
       mint,
     ]).publicKey;
-    let oracleAccount = this.findProgramAddress("oracle_account", [
-      pool,
-      mint,
-    ]).publicKey;
+
     let custody = this.findProgramAddress("custody", [
       pool,
       mint,
     ]).publicKey;
+
     return {
       mint,
       tokenAccount,
@@ -265,7 +276,7 @@ export class PerpetualsClient {
     return this.program.account.multisig.fetch(this.multisig.publicKey);
   };
 
-  getPositionKey = (
+  getPositionKey = async (
     wallet: PublicKey,
     poolName: string,
     tokenMint: PublicKey,
@@ -607,7 +618,6 @@ export class PerpetualsClient {
         ema,
       })
       .accounts({
-        signer: this.provider.wallet.publicKey,
         perpetuals: this.perpetuals.publicKey,
         pool: this.getPoolKey(poolName),
         custody: this.getCustodyKey(poolName, tokenMint),
@@ -810,32 +820,36 @@ export class PerpetualsClient {
     collateral: BN,
     size: BN,
     side: PositionSide,
-    user,
+    // user,
     fundingAccount: PublicKey,
     positionAccount: PublicKey,
     custody) => {
-    this.program.methods
-      .openPosition({
-        price: new BN(price * 1000000),
-        collateral,
-        size,
-        side: side === "long" ? { long: {} } : { short: {} },
-    })
-    .accounts({
-      owner: user.wallet.publicKey,
-      fundingAccount,
-      transferAuthority: this.authority.publicKey,
-      perpetuals: this.perpetuals.publicKey,
-      pool: this.getPoolKey("SLP-Pool"),
-      position: positionAccount,
-      custody: custody.custody,
-      custodyOracleAccount: custody.oracleAccount,
-      custodyTokenAccount: custody.tokenAccount,
-      systemProgram: SystemProgram.programId,
-      tokenProgram: TOKEN_PROGRAM_ID,
-    })
-    .signers([user.wallet])
-    .rpc();
+      try {
+        this.program.methods
+          .openPosition({
+            price: new BN(price * 1000000),
+            collateral,
+            size,
+            side: side === "long" ? { long: {} } : { short: {} },
+        })
+        .accounts({
+          owner: this.provider.wallet.publicKey,
+          fundingAccount,
+          transferAuthority: this.authority.publicKey,
+          perpetuals: this.perpetuals.publicKey,
+          pool: this.getPoolKey("SLP-Pool"),
+          position: positionAccount,
+          custody: custody.custody,
+          custodyOracleAccount: custody.oracleAccount,
+          custodyTokenAccount: custody.tokenAccount,
+          systemProgram: SystemProgram.programId,
+          tokenProgram: TOKEN_PROGRAM_ID,
+        })
+        .signers([])
+        .rpc();
+      } catch (error) {
+        console.log(error, 'open error open error')
+      }
   }
   
   closePosition = async(
@@ -865,13 +879,47 @@ export class PerpetualsClient {
     .rpc()
   }
 
-  createFundingAccount = async(connection, payer, mint, owner) => {
-  await createAssociatedTokenAccount(
-    connection,
-    payer,
-    mint,
-    owner
-  );}
+  createFundingAccount = async() => {
+
+    const token_acc = await this.getFundingAccountKey(
+      new PublicKey("So11111111111111111111111111111111111111112"),
+      this.provider.wallet.publicKey,
+      false,
+      TOKEN_PROGRAM_ID,
+      ASSOCIATED_TOKEN_PROGRAM_ID
+    ) 
+    const transaction = new Transaction().add(
+      createAssociatedTokenAccountInstruction(
+        this.provider.wallet.publicKey,
+        token_acc,
+        this.provider.wallet.publicKey,
+        new PublicKey("So11111111111111111111111111111111111111112"),
+      )
+    );
+    transaction.recentBlockhash = (
+      await this.provider.connection.getLatestBlockhash()
+    ).blockhash
+    transaction.feePayer = new PublicKey(this.provider.wallet.publicKey)
+    console.log(transaction) 
+    const txn = await this.provider.wallet
+      .signTransaction(transaction)
+      .catch((err) => {
+        console.log(err);
+        throw new Error("User rejected the request.");
+      });
+    const buffer = await txn.serialize().toString("base64");
+    console.log("Sending...");
+
+    let txid = await this.provider.connection
+      .sendEncodedTransaction(buffer)
+      .catch((err) => {
+        throw new Error(`Unexpected Error Occurred: ${err}`);
+      });
+
+    console.log(
+      `Transaction Submitted: https://solana.fm/address/${txid}?cluster=devnet-solana`
+    );
+  }
 }
 
 

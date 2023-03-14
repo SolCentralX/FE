@@ -15,14 +15,13 @@ export function useFetchProvider() {
             provider = new AnchorProvider(
                 connection,
                 anchorWallet,
-                { preflightCommitment: "confirmed" },
+                AnchorProvider.defaultOptions()
             );
         }
         return provider;
     }
     const anchorWallet = useAnchorWallet()
     const provider = getProvider(anchorWallet)
-    // const program = new Program(IDL, "2nv5ppjUhvze6m6RAZweUBVzt3KSbszsBuW1Yjh4kr8A", provider)
 
     const findProgramAddress = (label: string, program: any, extraSeeds = null) => {
         let seeds = [Buffer.from(utils.bytes.utf8.encode(label))];

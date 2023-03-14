@@ -9,6 +9,7 @@ import { useAtom } from 'jotai'
 
 export default function Home() {
   const {provider} = useFetchProvider()
+  // const {openPosiition} = useFetchApprove()
   // const [datas , setData] = useAtom(data)
   const [flag, setFlag] = useState(false)
   const {fetchData} = useFetchData()
@@ -71,7 +72,7 @@ export default function Home() {
             </p>
             <h3 className='text-white text-xl mt-20' style={{marginTop: '10px'}}>
               <span>Balance: </span>
-              <span>◎5.00189312</span>
+              <span>◎5.00</span>
             </h3>
             <div className="flex justify-between pr-10" style={{marginTop: '16px'}}>
               <dl className='w-1/2 h-32 bg-[#2d42fc] rounded mr-6 flex flex-col justify-center text-white px-4'>
@@ -80,7 +81,7 @@ export default function Home() {
               </dl>
               <dl className='w-1/2 h-32 bg-[#2d42fc] rounded flex flex-col justify-center text-white px-4'>
                 <dt className='text-xl mb-2'>Net Worth in SOL</dt>
-                <dd>◎5.001893</dd>
+                <dd>◎5.00</dd>
               </dl>
             </div>
           </div>
